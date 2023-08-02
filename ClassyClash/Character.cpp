@@ -1,60 +1,72 @@
 #include "Character.h"
 #include "raymath.h"
-Character ::Character(int windowWidth, int windowHeight)
+Character ::Character(int winWidth, int winHeight):
+    windowWidth(winWidth),
+    windowHeight(winHeight)
 {
     width = texture.width / maxFrame;
     height = texture.height;
-    characterPosition = {
-    static_cast<float>(windowWidth) / 2.f - scale * (0.5f * (float)texture.width / 6.f),
-    static_cast<float>(windowHeight) / 2.0f - scale * (0.5f * (float)texture.height)};
 }
+Vector2 Character :: getScreenPosition()
+{
+    return Vector2{
+        static_cast<float>(windowWidth) / 2.0f - scale * (0.5f * width),
+        static_cast<float>(windowHeight) / 2.0f - scale * (0.5f * height)
+    };
+}
+void Character :: takeDamage(float damage)
+{
+    health -= damage;
+    if (health <= 0.f)
+    {
+        setAlive(false);
+    }
+} 
 void Character ::tick(float deltaTime)
 {
-    windowPositionLastFrame = windowPosition;
-    Vector2 direction{};
+    if (!getAlive()) return;
     if (IsKeyDown(KEY_A))
-        direction.x -= 1.0;
+        velocity.x -= 1.0;
     if (IsKeyDown(KEY_D))
-        direction.x += 1.0;
+        velocity.x += 1.0;
     if (IsKeyDown(KEY_W))
-        direction.y -= 1.0;
+        velocity.y -= 1.0;
     if (IsKeyDown(KEY_S))
-        direction.y += 1.0;
-
-    // change map position by direction if moving left map moving right the player is stat still
-    if (Vector2Length(direction) != 0.0)
+        velocity.y += 1.0;
+    BaseCharacter :: tick(deltaTime);
+    Vector2 origin{};
+    Vector2 offset{};
+    float rotataion{};
+    if (faceRight > 0.f)
     {
-        // window position = windowposition + direction
-        windowPosition = Vector2Add(windowPosition, Vector2Scale(Vector2Normalize(direction), speed));
-        direction.x < 0.f ? faceRight = -1.f : faceRight = 1.f;
-        texture = run;
+        origin = {0.f, scale * weapon.height};
+        offset = {35.f, 55.f};
+        weaponCollisionRec = {
+            getScreenPosition().x + offset.x,
+            getScreenPosition().y + offset.y - weapon.height * scale,
+            weapon.width * scale,
+            weapon.height * scale 
+        };
+        rotataion = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? 35.f : 0.f;
+    } else {
+        origin = {scale * weapon.width, scale * weapon.height};
+        offset = {25.f, 55.f};
+        weaponCollisionRec = {
+            getScreenPosition().x + offset.x - weapon.width * scale,
+            getScreenPosition().y + offset.y - weapon.height * scale,
+            weapon.width * scale,
+            weapon.height * scale
+        };
+        rotataion = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? -35.f : 0.f;
     }
-    else
-    {
-        texture = idle;
-    }
-    runningTime += deltaTime;
-    if (runningTime >= updateTime)
-    {
-        runningTime = 0;
-        frame++;
-        if (frame > maxFrame)
-            frame = 0;
-    }
-    Rectangle source{frame * width, 0.f, faceRight * width, height};
-    Rectangle dest{characterPosition.x, characterPosition.y, scale * width, scale * (float)height};
-    DrawTexturePro(texture, source, dest, Vector2{}, 0.f, WHITE);
-}
-void Character:: undoMovement()
-{
-    windowPosition = windowPositionLastFrame;
-}
-Rectangle Character:: getCollisionRec()
-{
-    return Rectangle {
-        characterPosition.x,
-        characterPosition.y,
-        width * scale,
-        height * scale
-    };
+    Rectangle source {0.f, 0.f, static_cast<float>(weapon.width) * faceRight, static_cast<float>(weapon.height)};
+    Rectangle dest {getScreenPosition().x + offset.x, getScreenPosition().y + offset.y, scale * weapon.width, scale * weapon.height};
+    DrawTexturePro(weapon, source, dest, origin, rotataion, WHITE);
+    // DrawRectangleLines(
+    //     weaponCollisionRec.x,
+    //     weaponCollisionRec.y,
+    //     weaponCollisionRec.width,
+    //     weaponCollisionRec.height,
+    //     RED
+    // );
 }

@@ -2,6 +2,8 @@
 #include "raymath.h"
 #include "Character.h"
 #include "Prop.h"
+#include "Enemy.h"
+#include <string>
 int main()
 {
     // window references
@@ -22,6 +24,25 @@ int main()
         Prop{Vector2{400.f, 500.f}, LoadTexture("nature_tileset/Log.png")}
     };
 
+    //enemy references
+    Enemy goblin{
+        Vector2{800.f, 300.f},
+        LoadTexture("characters/goblin_idle_spritesheet.png"),
+        LoadTexture("characters/goblin_run_spritesheet.png")
+    };
+    Enemy slime{
+        Vector2{500.f, 700.f},
+        LoadTexture("characters/slime_idle_spritesheet.png"),
+        LoadTexture("characters/slime_run_spritesheet.png")
+    };
+    Enemy *enemies[]{
+        &goblin,
+        &slime
+    };
+    for (auto enemy : enemies)
+    {
+        enemy -> setTarget(&knight);
+    }
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -31,21 +52,48 @@ int main()
 
         // begin game logic
 
-        mapPosition = Vector2Scale(knight.getwindowPosition(), -1.f);
+        mapPosition = Vector2Scale(knight.getWorldPosition(), -1.f);
         // draw the map
         DrawTextureEx(map, mapPosition, 0.0, mapScale, WHITE);
 
         //draw the prop
         for (auto prop : props)
         {
-            prop.Render(knight.getwindowPosition());
+            prop.Render(knight.getWorldPosition());
+        }
+        if (!knight.getAlive()) // character is dead
+        {
+            DrawText("Game Over", 75.f, 55.f, 40, WHITE);
+            EndDrawing();
+            continue;
+        } else { // character is alive
+            std :: string knightHealth = "Health: ";
+            knightHealth.append(std :: to_string(knight.getHealth()), 0 , 5);
+            DrawText(knightHealth.c_str(), 55.f, 45.f, 40, WHITE);
+        }
+
+        //draw the enemy
+        for (auto enemy : enemies)
+        {
+            enemy->tick(GetFrameTime());
+        }
+
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {
+            for (auto enemy : enemies)
+            {
+                if (CheckCollisionRecs(enemy->getCollisionRec(), knight.getWeaponCollisionRec()))
+                {
+                    enemy->setAlive(false);
+                }
+            }
         }
 
         //draw character
         knight.tick(GetFrameTime());
 
         //check map bounds
-        Vector2 windowPosition = knight.getwindowPosition();
+        Vector2 windowPosition = knight.getWorldPosition();
         if (windowPosition.x < 0 ||
             windowPosition.y < 0 ||
             windowPosition.x + windowWidth > map.width * mapScale ||
@@ -56,7 +104,7 @@ int main()
         //check for collisions
         for (auto prop : props)
         {
-            if (CheckCollisionRecs(prop.getCollisionRec(knight.getwindowPosition()), knight.getCollisionRec()))
+            if (CheckCollisionRecs(prop.getCollisionRec(knight.getWorldPosition()), knight.getCollisionRec()))
                 knight.undoMovement();
         }
 
