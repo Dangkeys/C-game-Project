@@ -68,5 +68,6 @@ void Character ::tick(float deltaTime)
     //     weaponCollisionRec.width,
     //     weaponCollisionRec.height,
     //     RED
+
     // );
 }
