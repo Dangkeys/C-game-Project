@@ -6,13 +6,14 @@
 #include <string>
 int main()
 {
-    // window references
-    const int windowWidth{384};
-    const int windowHeight{384};
+    // window referencessssssssssssss
+    const int windowWidth{1950};
+    const int windowHeight{1180};
     InitWindow(windowWidth, windowHeight, "Classyclash!");
 
     // map references
-    Texture2D map = LoadTexture("nature_tileset/OpenWorldMap24x24.png");
+    //Texture2D map = LoadTexture("nature_tileset/OpenWorldMap24x24.png");
+    Texture2D map = LoadTexture("nature_tileset/realMap.png");
     Vector2 mapPosition{};
     const float mapScale{4.0f};
     // knight references
@@ -20,18 +21,18 @@ int main()
 
     // prop references
     Prop props[2]{
-        Prop{Vector2{600.f, 300.f}, LoadTexture("nature_tileset/Rock.png")},
-        Prop{Vector2{400.f, 500.f}, LoadTexture("nature_tileset/Log.png")}
+        Prop{Vector2{1050.f, 1300.f}, LoadTexture("nature_tileset/Rock.png")},
+        Prop{Vector2{2000.f, 1500.f}, LoadTexture("nature_tileset/Log.png")}
     };
 
     //enemy references
     Enemy goblin{
-        Vector2{800.f, 300.f},
+        Vector2{1800.f, 2300.f},
         LoadTexture("characters/goblin_idle_spritesheet.png"),
         LoadTexture("characters/goblin_run_spritesheet.png")
     };
     Enemy slime{
-        Vector2{500.f, 700.f},
+        Vector2{1500.f, 1700.f},
         LoadTexture("characters/slime_idle_spritesheet.png"),
         LoadTexture("characters/slime_run_spritesheet.png")
     };
@@ -42,7 +43,7 @@ int main()
     for (auto enemy : enemies)
     {
         enemy -> setTarget(&knight);
-    }
+    } 
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -69,7 +70,7 @@ int main()
         } else { // character is alive
             std :: string knightHealth = "Health: ";
             knightHealth.append(std :: to_string(knight.getHealth()), 0 , 5);
-            DrawText(knightHealth.c_str(), 55.f, 45.f, 40, WHITE);
+            DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
         }
 
         //draw the enemy
@@ -84,7 +85,7 @@ int main()
             {
                 if (CheckCollisionRecs(enemy->getCollisionRec(), knight.getWeaponCollisionRec()))
                 {
-                    enemy->setAlive(false);
+                    enemy->setAlive(false); 
                 }
             }
         }
@@ -93,11 +94,11 @@ int main()
         knight.tick(GetFrameTime());
 
         //check map bounds
-        Vector2 windowPosition = knight.getWorldPosition();
-        if (windowPosition.x < 0 ||
-            windowPosition.y < 0 ||
-            windowPosition.x + windowWidth > map.width * mapScale ||
-            windowPosition.y + windowHeight > map.height * mapScale)
+        Vector2 worldPosition = knight.getWorldPosition();
+        if (worldPosition.x < 0 ||
+            worldPosition.y < 0 ||
+            worldPosition.x + windowWidth > map.width * mapScale ||
+            worldPosition.y + windowHeight > map.height * mapScale)
         {
             knight.undoMovement();
         }

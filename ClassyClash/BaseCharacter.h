@@ -9,6 +9,7 @@ public:
     Vector2 getWorldPosition() {return worldPosition;}
     void undoMovement();
     Rectangle getCollisionRec();
+    void setSpeed(float characterSpeed) {speed = characterSpeed;}
     virtual void tick(float deltaTime);
     virtual Vector2 getScreenPosition() = 0;
     bool getAlive() {return alive;}
