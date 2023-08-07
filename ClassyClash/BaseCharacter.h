@@ -8,6 +8,9 @@ public:
     BaseCharacter();
     Vector2 getWorldPosition() {return worldPosition;}
     void undoMovement();
+    void undoMovementX();
+    void undoMovementY();
+    void addCollision(Rectangle rec1, Rectangle rec2);
     Rectangle getCollisionRec();
     void setSpeed(float characterSpeed) {speed = characterSpeed;}
     virtual void tick(float deltaTime);

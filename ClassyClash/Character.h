@@ -16,6 +16,6 @@ private:
     int windowHeight{};
     Texture2D weapon{LoadTexture("characters/weapon_sword.png")};
     Rectangle weaponCollisionRec{};
-    float health{30.f};
+    float health{100.f};
 };
 #endif

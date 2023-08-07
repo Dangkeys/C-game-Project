@@ -5,14 +5,28 @@ BaseCharacter::BaseCharacter()
     
 }
 
-void BaseCharacter::undoMovement()
+
+void BaseCharacter::undoMovementX()
 {
-    worldPosition = worldPositionLastFrame;
+    worldPosition.x = worldPositionLastFrame.x;
 }
+
+void BaseCharacter::undoMovementY()
+{
+    worldPosition.y = worldPositionLastFrame.y;
+}
+
+void BaseCharacter::addCollision(Rectangle rec1, Rectangle rec2)
+{
+    if(rec1.x + rec1.width >= rec2.x || rec1.x <= rec2.x + rec2.width) {undoMovementX();}
+    else if (rec1.y + rec1.height >= rec2.y) {undoMovementY();}
+}
+
 
 Rectangle BaseCharacter::getCollisionRec()
 {
     return Rectangle{
+
         getScreenPosition().x,
         getScreenPosition().y,
         width * scale,
