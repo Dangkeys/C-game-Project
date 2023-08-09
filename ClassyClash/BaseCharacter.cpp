@@ -2,9 +2,7 @@
 #include "raymath.h"
 BaseCharacter::BaseCharacter()
 {
-    
 }
-
 
 void BaseCharacter::undoMovementX()
 {
@@ -18,10 +16,15 @@ void BaseCharacter::undoMovementY()
 
 void BaseCharacter::addCollision(Rectangle rec1, Rectangle rec2)
 {
-    if(rec1.x + rec1.width >= rec2.x || rec1.x <= rec2.x + rec2.width) {undoMovementX();}
-    else if (rec1.y + rec1.height >= rec2.y) {undoMovementY();}
+    if (rec1.x + rec1.width >= rec2.x || rec1.x <= rec2.x + rec2.width)
+    {
+        undoMovementX();
+    }
+    else if (rec1.y + rec1.height >= rec2.y)
+    {
+        undoMovementY();
+    }
 }
-
 
 Rectangle BaseCharacter::getCollisionRec()
 {
@@ -30,8 +33,7 @@ Rectangle BaseCharacter::getCollisionRec()
         getScreenPosition().x,
         getScreenPosition().y,
         width * scale,
-        height * scale
-    };
+        height * scale};
 }
 
 void BaseCharacter::tick(float deltaTime)
@@ -51,14 +53,17 @@ void BaseCharacter::tick(float deltaTime)
     {
         // window position = windowposition + direction
         worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(velocity), speed));
-        velocity.x < 0.f ? faceRight = -1.f : faceRight = 1.f;
+        if (velocity.x != 0)
+        {
+            velocity.x < 0.f ? faceRight = -1.f : faceRight = 1.f;
+        }
         texture = run;
     }
     else
     {
         texture = idle;
     }
-    //at the end of each frame set velocity to 0
+    // at the end of each frame set velocity to 0
     velocity = {};
 
     // draw the character

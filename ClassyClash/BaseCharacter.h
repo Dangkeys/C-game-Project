@@ -30,7 +30,7 @@ protected:
     int frame{};
     int maxFrame{6};
     float updateTime{1.f / 12.f};
-    float speed{4.f};
+    float speed{4.8f};
     float width{};
     float height{};
     float scale{4.0f};

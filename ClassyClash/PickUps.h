@@ -1,3 +1,5 @@
+#ifndef PICKUPS_H
+#define PICKUPS_H
 #include "raylib.h"
 #include "raymath.h"
 
@@ -30,3 +32,4 @@ protected:
 private:
     bool active{true};
 };
+#endif
