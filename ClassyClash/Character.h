@@ -11,6 +11,7 @@ public:
     Rectangle getWeaponCollisionRec() {return weaponCollisionRec;}
     float getHealth() const {return health;}
     void takeDamage(float damage);
+    float getKnockBack() {return knockBack;}
 private:
     int windowWidth{};
     int windowHeight{};
@@ -18,5 +19,6 @@ private:
     Rectangle weaponCollisionRec{};
     int coinCounter{};
     float health{100.f};
+    float knockBack{15.f};
 };
 #endif

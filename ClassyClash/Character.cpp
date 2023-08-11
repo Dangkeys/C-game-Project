@@ -40,7 +40,7 @@ void Character ::tick(float deltaTime)
     if (faceRight > 0.f)
     {
         origin = {0.f, scale * weapon.height};
-        offset = {35.f, 55.f};
+        offset = {48.f, 65.f};
         weaponCollisionRec = {
             getScreenPosition().x + offset.x,
             getScreenPosition().y + offset.y - weapon.height * scale,
@@ -50,7 +50,7 @@ void Character ::tick(float deltaTime)
         rotataion = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? 35.f : 0.f;
     } else {
         origin = {scale * weapon.width, scale * weapon.height};
-        offset = {25.f, 55.f};
+        offset = {25.f, 65.f};
         weaponCollisionRec = {
             getScreenPosition().x + offset.x - weapon.width * scale,
             getScreenPosition().y + offset.y - weapon.height * scale,
@@ -68,6 +68,5 @@ void Character ::tick(float deltaTime)
     //     weaponCollisionRec.width,
     //     weaponCollisionRec.height,
     //     RED
-
     // );
 }
