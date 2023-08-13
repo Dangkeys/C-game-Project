@@ -21,7 +21,7 @@ void Character :: takeDamage(float damage)
     {
         setAlive(false);
     }
-} 
+}
 void Character ::tick(float deltaTime)
 {
     if (!getAlive()) return;
@@ -31,36 +31,40 @@ void Character ::tick(float deltaTime)
         velocity.x += 1.0;
     if (IsKeyDown(KEY_W))
         velocity.y -= 1.0;
-    if (IsKeyDown(KEY_S))
+    if (IsKeyDown(KEY_S) && validMoveMentS)
+    {
         velocity.y += 1.0;
+    }
+
+        
     BaseCharacter :: tick(deltaTime);
     Vector2 origin{};
     Vector2 offset{};
     float rotataion{};
     if (faceRight > 0.f)
     {
-        origin = {0.f, scale * weapon.height};
-        offset = {48.f, 65.f};
+        origin = {0.f, swordScale * weapon.height};
+        offset = {79.f, 83.f};
         weaponCollisionRec = {
             getScreenPosition().x + offset.x,
-            getScreenPosition().y + offset.y - weapon.height * scale,
-            weapon.width * scale,
-            weapon.height * scale 
+            getScreenPosition().y + offset.y - weapon.height * swordScale,
+            weapon.width * swordScale,
+            weapon.height * swordScale 
         };
         rotataion = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? 35.f : 0.f;
     } else {
-        origin = {scale * weapon.width, scale * weapon.height};
-        offset = {25.f, 65.f};
+        origin = {swordScale * weapon.width, swordScale * weapon.height};
+        offset = {30.f, 83.f};
         weaponCollisionRec = {
-            getScreenPosition().x + offset.x - weapon.width * scale,
-            getScreenPosition().y + offset.y - weapon.height * scale,
-            weapon.width * scale,
-            weapon.height * scale
+            getScreenPosition().x + offset.x - weapon.width * swordScale,
+            getScreenPosition().y + offset.y - weapon.height * swordScale,
+            weapon.width * swordScale,
+            weapon.height * swordScale
         };
         rotataion = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? -35.f : 0.f;
     }
     Rectangle source {0.f, 0.f, static_cast<float>(weapon.width) * faceRight, static_cast<float>(weapon.height)};
-    Rectangle dest {getScreenPosition().x + offset.x, getScreenPosition().y + offset.y, scale * weapon.width, scale * weapon.height};
+    Rectangle dest {getScreenPosition().x + offset.x, getScreenPosition().y + offset.y, swordScale * weapon.width, swordScale * weapon.height};
     DrawTexturePro(weapon, source, dest, origin, rotataion, WHITE);
     // DrawRectangleLines(
     //     weaponCollisionRec.x,

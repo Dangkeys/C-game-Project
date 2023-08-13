@@ -42,10 +42,18 @@ void Enemy::tick(float deltaTime)
             isKnockFirstFrame = false;
         }
         worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(knockback), target->getKnockBack()));
+        if (isMapboundX)
+            // knockback.x *= -1;
+            undoMovementX();
+        if (isMapboundY)
+            // knockback.y *= -1;
+            undoMovementY();
+        isMapboundX = false;
+        isMapboundY = false;
         velocity = {};
         Rectangle source{frame * width, 0.f, faceRight * width, height};
         Rectangle dest{getScreenPosition().x, getScreenPosition().y, scale * width, scale * height};
-        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, WHITE);
+        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, PINK);
         setActive();
     }
     else

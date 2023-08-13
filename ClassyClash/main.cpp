@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "PickUps.h"
 #include "Prop.h"
+#include "Mapbound.h"
 #include <string>
 const int coinMax{391};
 const int sizeOfCoinWidth{31};
@@ -20,7 +21,7 @@ int main()
 {
     // window referencessssssssssssss
     const int windowWidth{1950};
-    const int windowHeight{1180};
+    const int windowHeight{1100};
     InitWindow(windowWidth, windowHeight, "Classyclash!");
 
     // map references
@@ -36,11 +37,13 @@ int main()
         LoadTexture("characters/goblin_idle_spritesheet.png"),
         LoadTexture("characters/goblin_run_spritesheet.png")};
     Enemy slime{
-        Vector2{1500.f, 1700.f},
+        Vector2{1500.f, 2700.f},
         LoadTexture("characters/slime_idle_spritesheet.png"),
         LoadTexture("characters/slime_run_spritesheet.png")};
     slime.setSpeed(5.f);
     goblin.setSpeed(6.5f);
+    slime.setScale(5.5f);
+    goblin.setScale(5.f);
     Enemy *enemies[]{
         &goblin,
         &slime};
@@ -91,6 +94,18 @@ int main()
         }
     }
 
+    // mapbound reference
+    float landWidth{33 * tileSize + 20.f};
+    float landHeight{18 * tileSize};
+    float sizeOfRectangle{20.f};
+    Mapbound upperbound{{7 * tileSize, 4 * tileSize}, landWidth, sizeOfRectangle};
+    Mapbound lowerbound{{7 * tileSize, 21 * tileSize + 50}, landWidth, sizeOfRectangle};
+    Mapbound leftbound{{7 * tileSize - 20.f, 4 * tileSize}, sizeOfRectangle, landHeight};
+    Mapbound rightbound{{40 * tileSize + 20.f, 4 * tileSize}, sizeOfRectangle, landHeight};
+    Mapbound *mapbounds[]{&upperbound, &lowerbound, &leftbound, &rightbound};
+    Mapbound *mapboundsX[]{&leftbound, &rightbound};
+    Mapbound *mapboundsY[]{&upperbound, &lowerbound};
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -118,12 +133,12 @@ int main()
         { // character is alive
             std ::string knightHealth = "Health: ";
             knightHealth.append(std ::to_string(knight.getHealth()), 0, 5);
-            DrawText(knightHealth.c_str(), 55.f, 200.f, 40, WHITE);
+            DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
             std ::string coinCount = "Coin: ";
             coinCount.append(std ::to_string(coinCollected), 0, 3);
             coinCount.append("/", 0, 1);
             coinCount.append(std::to_string(coinCounter), 0, 3);
-            DrawText(coinCount.c_str(), windowWidth - 280.f, 200.f, 40, WHITE);
+            DrawText(coinCount.c_str(), windowWidth - 280.f, 100.f, 40, WHITE);
             // std ::string showScore = "Score: ";
             // showScore.append(std::to_string(score), 0, 4);
             // DrawText(showScore.c_str(), windowWidth - 550.f, 200.f, 40, WHITE);
@@ -172,20 +187,32 @@ int main()
         {
             knight.undoMovementY();
         }
-        // this code need to fix bug
-        //  for (auto enemy : enemies)
-        //  {
-        //      if (worldPosition.x < 0 ||
-        //          worldPosition.x + windowWidth > map.width * mapScale)
-        //      {
-        //          enemy->undoMovementX();
-        //      }
-        //      if (worldPosition.y < 0 || worldPosition.y + windowHeight > map.height * mapScale)
-        //      {
-        //          enemy->undoMovementY();
-        //      }
-        //  }
+        if (CheckCollisionRecs(knight.getCollisionRec(), lowerbound.getCollisionRec()))
+            knight.undoMovementS();
+        else
+            knight.doMovements();
 
+        // mapbound mechanic
+        for (auto mapbound : mapbounds)
+        {
+            mapbound->Render(knight.getWorldPosition());
+        }
+        for (auto mapbound : mapboundsX)
+        {
+            for (auto enemy : enemies)
+            {
+                if (CheckCollisionRecs(enemy->getCollisionRec(), mapbound->getCollisionRec()))
+                    enemy->collideWithMapboundX();
+            }
+        }
+        for (auto mapbound : mapboundsY)
+        {
+            for (auto enemy : enemies)
+            {
+                if (CheckCollisionRecs(enemy->getCollisionRec(), mapbound->getCollisionRec()))
+                    enemy->collideWithMapboundY();
+            }
+        }
         // end game logic
         EndDrawing();
     }

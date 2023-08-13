@@ -7,6 +7,7 @@ BaseCharacter::BaseCharacter()
 void BaseCharacter::undoMovementX()
 {
     worldPosition.x = worldPositionLastFrame.x;
+
 }
 
 void BaseCharacter::undoMovementY()

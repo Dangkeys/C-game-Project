@@ -33,7 +33,7 @@ protected:
     float speed{8.f};
     float width{};
     float height{};
-    float scale{5.f};
+    float scale{7.f};
     Vector2 velocity{};
 private:
     bool alive{true};

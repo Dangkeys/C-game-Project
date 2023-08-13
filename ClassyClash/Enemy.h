@@ -20,7 +20,10 @@ public:
     void hurt() { health--; };
     void setActive();
     void KnockBack();
+    void setScale(float setScale) {scale = setScale;}
     virtual Vector2 getScreenPosition() override;
+    void collideWithMapboundX(){isMapboundX = true;}
+    void collideWithMapboundY(){isMapboundY = true;}
 
 private:
     Character *target;
@@ -32,5 +35,7 @@ private:
     float knockBackTime{};
     float knockBackUpdateTime{1.f / 4.f};
     bool isKnockFirstFrame{false};
+    bool isMapboundX{false};
+    bool isMapboundY{false};
     Vector2 knockback{};
 };
