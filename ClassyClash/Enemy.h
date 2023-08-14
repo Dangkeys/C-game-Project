@@ -1,6 +1,10 @@
+#ifndef ENEMY_H
+#define ENEMY_h
 #include "raylib.h"
 #include "BaseCharacter.h"
 #include "Character.h"
+#include "raymath.h"
+#define NULL 00L
 /*
     enemy need health pass
     knockback pass
@@ -16,17 +20,31 @@ class Enemy : public BaseCharacter
 public:
     Enemy(Vector2 position, Texture2D idle, Texture2D run);
     virtual void tick(float deltaTime) override;
-    void setTarget(Character *character) { target = character; }
+    void setTarget(Character *character) { target = character;}
+    void setKnight(Character *setKnight) {knight = setKnight;}
+    Character *getTarget() {return target;}
     void hurt() { health--; };
     void setActive();
     void KnockBack();
     void setScale(float setScale) {scale = setScale;}
+    void setScreenPosition(Vector2 knightPosition) {screenPosition = Vector2Subtract(worldPosition, knightPosition);}
     virtual Vector2 getScreenPosition() override;
     void collideWithMapboundX(){isMapboundX = true;}
     void collideWithMapboundY(){isMapboundY = true;}
+    void collideWithLeftbound() {isLeftbound = true;}
+    void collideWithRightbound() {isRightbound = true;}
+    void collideWithBottombound() {isBottombound = true;}
+    void noCollideWithBottombound() {isBottombound = false;}
+    void drawDetectRadius();
+    float getWidth() {return width;}
+    float getHeight() {return height;}
+    float getDetectRadius() {return detectRadius;}
+    void setZeroTimeCounter() {timeCounter = 0.f;}
+    void setPatrolSpeed(float speed) {patrolSpeed = speed;}
 
-private:
-    Character *target;
+protected:
+    Character *target{NULL};
+    Character *knight{NULL};
     float damagePerSec{10.f};
     float radius{50.f};
     int health{3};
@@ -37,5 +55,16 @@ private:
     bool isKnockFirstFrame{false};
     bool isMapboundX{false};
     bool isMapboundY{false};
+    bool isLeftbound{false};
+    bool isRightbound{false};
+    bool isBottombound{false};
     Vector2 knockback{};
+    Vector2 screenPosition{worldPosition};
+    float detectRadius{300.f};
+    float timeCounter{};
+    float UpdateTimeCounter{2};
+    float patrolSpeed{-50.f};
+    float corectFace{};
+private:
 };
+#endif

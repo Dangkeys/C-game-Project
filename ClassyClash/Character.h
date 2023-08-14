@@ -14,6 +14,8 @@ public:
     float getKnockBack() {return knockBack;}
     void undoMovementS() {validMoveMentS = false;}
     void doMovements() {validMoveMentS = true;}
+    void setScale(float setScale) {scale = setScale;}
+    void setInvisible(bool invisible){isInvisible = invisible;}
 private:
     int windowWidth{};
     int windowHeight{};
@@ -24,5 +26,9 @@ private:
     float knockBack{15.f};
     float swordScale{6.f};
     bool validMoveMentS{true};
+    Vector2 swordOffset{};
+    Vector2 swordOffsetRight{79.f, 83.f};;
+    Vector2 swordOffsetLeft{30.f, 83.f};
+
 };
 #endif

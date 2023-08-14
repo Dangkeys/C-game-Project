@@ -7,7 +7,6 @@ BaseCharacter::BaseCharacter()
 void BaseCharacter::undoMovementX()
 {
     worldPosition.x = worldPositionLastFrame.x;
-
 }
 
 void BaseCharacter::undoMovementY()
@@ -58,5 +57,12 @@ void BaseCharacter::tick(float deltaTime)
     // draw the character
     Rectangle source{frame * width, 0.f, faceRight * width, height};
     Rectangle dest{getScreenPosition().x, getScreenPosition().y, scale * width, scale * height};
-    DrawTexturePro(texture, source, dest, Vector2{}, 0.f, WHITE);
+    if (isInvisible)
+    {
+        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, {255,255,255, 100});
+    }
+    else
+    {
+        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, WHITE);
+    }
 }

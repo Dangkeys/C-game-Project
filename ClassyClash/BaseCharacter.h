@@ -6,17 +6,21 @@ class BaseCharacter
 {
 public:
     BaseCharacter();
-    Vector2 getWorldPosition() {return worldPosition;}
-    void undoMovement() {worldPosition = worldPositionLastFrame;}
+    Vector2 getWorldPosition() { return worldPosition; }
+    void undoMovement() { worldPosition = worldPositionLastFrame; }
     void undoMovementX();
     void undoMovementY();
     Rectangle getCollisionRec();
-    void setSpeed(float characterSpeed) {speed = characterSpeed;}
+    void setSpeed(float characterSpeed) { speed = characterSpeed; }
     virtual void tick(float deltaTime);
+    void setMaxFrame(int setMax) { maxFrame = setMax; }
     virtual Vector2 getScreenPosition() = 0;
-    bool getAlive() {return alive;}
-    void setAlive(bool isAlive) {alive = isAlive;}
-    float getFaceRight(){return faceRight;}
+    bool getAlive() { return alive; }
+    void setAlive(bool isAlive) { alive = isAlive; }
+    float getFaceRight() { return faceRight; }
+    float getScale() { return scale; }
+    void setUpdateTime(float time) { updateTime = time; }
+
 protected:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
     Texture2D idle{LoadTexture("characters/knight_idle_spritesheet.png")};
@@ -35,12 +39,10 @@ protected:
     float height{};
     float scale{7.f};
     Vector2 velocity{};
+    bool isInvisible{false};
+
 private:
     bool alive{true};
 };
 
 #endif
-
-
-
-

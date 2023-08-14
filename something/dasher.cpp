@@ -27,12 +27,13 @@ int main()
 
     //player dimensions
     bool isOnAir{};
-    Texture2D scarfy = LoadTexture("textures/scarfy.png");
+
+    Texture2D scarfy = LoadTexture("textures/0x72_DungeonTilesetII_v1.6.png");
     Animdata scarfyData;
-    scarfyData.rec.height = scarfy.height;
-    scarfyData.rec.width = scarfy.width / 6;
-    scarfyData.rec.x = 0;
-    scarfyData.rec.y = 0;
+    scarfyData.rec.height = 14;
+    scarfyData.rec.width = 122 / 8;
+    scarfyData.rec.x = 372;
+    scarfyData.rec.y = 432;
     scarfyData.pos.x = windowWidth / 2 - scarfyData.rec.width / 2;
     scarfyData.pos.y = windowHeight - scarfyData.rec.height;
     scarfyData.frame = 0;
@@ -146,9 +147,9 @@ int main()
         if (scarfyData.runningTime >= scarfyData.updateTime && !isOnAir)
         {
             scarfyData.runningTime = 0;
-            scarfyData.rec.x = scarfyData.frame * scarfyData.rec.width;
+            scarfyData.rec.x = scarfyData.frame * scarfyData.rec.width + 372;
             scarfyData.frame++;
-            if (scarfyData.frame > 5)
+            if (scarfyData.frame >= 8)
             {
                 scarfyData.frame = 0;
             }
@@ -160,7 +161,8 @@ int main()
         DrawTextureRec(nebula, neb2Data.rec, neb2Data.pos, RED);
         //draw player
         DrawTextureRec(scarfy, scarfyData.rec, scarfyData.pos, WHITE);
-
+        
+        DrawTextureEx(scarfy,{0,0},0,1,WHITE);
         //end game logic
         EndDrawing();
     }

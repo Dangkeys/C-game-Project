@@ -11,6 +11,9 @@ const int sizeOfCoinWidth{31};
 const int sizeOfCoinHeight{15};
 int coinCounter{};
 int coinCollected{};
+float scoreRunningTime{};
+float scoreUpdateTime{2};
+bool timeStart{false};
 const float mapScale{4.0f};
 const int tileSize{mapScale * 32};
 PickUps coins[coinMax];
@@ -33,23 +36,39 @@ int main()
 
     // enemy references
     Enemy goblin{
-        Vector2{1800.f, 2300.f},
+        Vector2{20 * tileSize, 9 * tileSize},
         LoadTexture("characters/goblin_idle_spritesheet.png"),
         LoadTexture("characters/goblin_run_spritesheet.png")};
     Enemy slime{
-        Vector2{1500.f, 2700.f},
+        Vector2{17 * tileSize, 11 * tileSize},
         LoadTexture("characters/slime_idle_spritesheet.png"),
         LoadTexture("characters/slime_run_spritesheet.png")};
-    slime.setSpeed(5.f);
-    goblin.setSpeed(6.5f);
+    Enemy demon{
+        Vector2{10 * tileSize, 5 * tileSize},
+        LoadTexture("characters/demon.png"),
+        LoadTexture("characters/demon.png")};
+    Enemy superDemon{
+        Vector2{13 * tileSize, 7 * tileSize},
+        LoadTexture("characters/superUndead.png"),
+        LoadTexture("characters/superUndead.png")};
+    superDemon.setMaxFrame(8);
+    superDemon.setUpdateTime(1.f/8.f);
+    demon.setMaxFrame(8);
+    // superDemon.setScale(4.5f);
+    demon.setScale(5.f);
+    slime.setSpeed(6.5f);
+    goblin.setSpeed(8.5f);
     slime.setScale(5.5f);
     goblin.setScale(5.f);
     Enemy *enemies[]{
         &goblin,
-        &slime};
+        &slime,
+        &demon,
+        &superDemon};
     for (auto enemy : enemies)
     {
-        enemy->setTarget(&knight);
+        // enemy->setTarget(&knight);
+        enemy->setKnight(&knight);
     }
 
     // super spaghetti code ei ei
@@ -93,7 +112,6 @@ int main()
             }
         }
     }
-
     // mapbound reference
     float landWidth{33 * tileSize + 20.f};
     float landHeight{18 * tileSize};
@@ -143,12 +161,6 @@ int main()
             // showScore.append(std::to_string(score), 0, 4);
             // DrawText(showScore.c_str(), windowWidth - 550.f, 200.f, 40, WHITE);
         }
-
-        // draw the enemy
-        for (auto enemy : enemies)
-        {
-            enemy->tick(GetFrameTime());
-        }
         // draw coin
         for (int i = 0; i < coinCounter; i++)
         {
@@ -160,11 +172,35 @@ int main()
                 score = coinCollected * 10;
             }
         }
+        // draw the enemy
+        for (auto enemy : enemies)
+        {
+            enemy->setScreenPosition(knight.getWorldPosition());
+            enemy->tick(GetFrameTime());
+            // enemy->drawDetectRadius();
+            if (CheckCollisionCircleRec(
+                    {enemy->getScreenPosition().x + enemy->getWidth() * enemy->getScale() / 2,
+                     enemy->getScreenPosition().y + enemy->getHeight() * enemy->getScale() / 2},
+                    enemy->getDetectRadius(),
+                    knight.getCollisionRec()))
+            {
+                enemy->setZeroTimeCounter();
+                enemy->setTarget(&knight);
+                enemy->setSpeed(6.5f);
+            }
+            else
+            {
+                enemy->setTarget(NULL);
+                enemy->setSpeed(2.f);
+            }
+        }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
+            // timeStart = true;
             for (auto enemy : enemies)
             {
+
                 if (CheckCollisionRecs(enemy->getCollisionRec(), knight.getWeaponCollisionRec()))
                 {
                     enemy->hurt();
@@ -172,6 +208,18 @@ int main()
                 }
             }
         }
+        // if (timeStart)
+        // {
+        //     scoreRunningTime += GetFrameTime();
+        //     if (scoreRunningTime >= scoreUpdateTime)
+        //     {
+        //         scoreRunningTime = 0;
+        //         timeStart = false;
+        //     }
+        //     knight.setInvisible(true);
+        // } else {
+        //     knight.setInvisible(false);
+        // }
 
         // draw character
         knight.tick(GetFrameTime());
@@ -212,6 +260,17 @@ int main()
                 if (CheckCollisionRecs(enemy->getCollisionRec(), mapbound->getCollisionRec()))
                     enemy->collideWithMapboundY();
             }
+        }
+        for (auto enemy : enemies)
+        {
+            if (CheckCollisionRecs(enemy->getCollisionRec(), leftbound.getCollisionRec()))
+                enemy->collideWithLeftbound();
+            if (CheckCollisionRecs(enemy->getCollisionRec(), rightbound.getCollisionRec()))
+                enemy->collideWithRightbound();
+            if (CheckCollisionRecs(enemy->getCollisionRec(), lowerbound.getCollisionRec()))
+                enemy->collideWithBottombound();
+            else
+                enemy->noCollideWithBottombound();
         }
         // end game logic
         EndDrawing();
