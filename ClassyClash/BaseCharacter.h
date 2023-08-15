@@ -19,7 +19,8 @@ public:
     void setAlive(bool isAlive) { alive = isAlive; }
     float getFaceRight() { return faceRight; }
     float getScale() { return scale; }
-    void setUpdateTime(float time) { updateTime = time; }
+    void setUpdateTime(float time) { updateTime = time;}
+    void setFrame(int x, int y) {frame = (x+y) % maxFrame;}
 
 protected:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
@@ -32,7 +33,7 @@ protected:
     // animation variables
     float runningTime{};
     int frame{};
-    int maxFrame{6};
+    int maxFrame{8};
     float updateTime{1.f / 12.f};
     float speed{8.f};
     float width{};

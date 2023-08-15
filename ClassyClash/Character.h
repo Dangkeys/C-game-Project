@@ -11,7 +11,6 @@ public:
     Rectangle getWeaponCollisionRec() {return weaponCollisionRec;}
     float getHealth() const {return health;}
     void takeDamage(float damage);
-    float getKnockBack() {return knockBack;}
     void undoMovementS() {validMoveMentS = false;}
     void doMovements() {validMoveMentS = true;}
     void setScale(float setScale) {scale = setScale;}
@@ -23,7 +22,7 @@ private:
     Rectangle weaponCollisionRec{};
     int coinCounter{};
     float health{100.f};
-    float knockBack{15.f};
+
     float swordScale{6.f};
     bool validMoveMentS{true};
     Vector2 swordOffset{};

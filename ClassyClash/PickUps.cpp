@@ -28,3 +28,4 @@ Rectangle PickUps::getCollisionRec()
         height * scale 
     };
 }
+

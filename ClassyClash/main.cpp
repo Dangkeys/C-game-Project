@@ -43,32 +43,65 @@ int main()
         Vector2{17 * tileSize, 11 * tileSize},
         LoadTexture("characters/slime_idle_spritesheet.png"),
         LoadTexture("characters/slime_run_spritesheet.png")};
-    Enemy demon{
-        Vector2{10 * tileSize, 5 * tileSize},
-        LoadTexture("characters/demon.png"),
-        LoadTexture("characters/demon.png")};
-    Enemy superDemon{
+    Enemy little{
+        Vector2{15 * tileSize, 5 * tileSize},
+        LoadTexture("characters/littleUndead.png"),
+        LoadTexture("characters/littleUndead.png")};
+    Enemy super{
         Vector2{13 * tileSize, 7 * tileSize},
-        LoadTexture("characters/superUndead.png"),
-        LoadTexture("characters/superUndead.png")};
-    superDemon.setMaxFrame(8);
-    superDemon.setUpdateTime(1.f/8.f);
-    demon.setMaxFrame(8);
-    // superDemon.setScale(4.5f);
-    demon.setScale(5.f);
-    slime.setSpeed(6.5f);
-    goblin.setSpeed(8.5f);
-    slime.setScale(5.5f);
-    goblin.setScale(5.f);
+        LoadTexture("characters/superDemon.png"),
+        LoadTexture("characters/superDemon.png")};
+    Enemy runner{
+        Vector2{12 * tileSize, 8 * tileSize},
+        LoadTexture("characters/runnerDemon.png"),
+        LoadTexture("characters/runnerDemon.png")};
+    Enemy normal{
+        Vector2{16 * tileSize, 6 * tileSize},
+        LoadTexture("characters/normalDemon.png"),
+        LoadTexture("characters/normalDemon.png")};
+    Enemy strong{
+        Vector2{14 * tileSize, 4 * tileSize},
+        LoadTexture("characters/strongDemon.png"),
+        LoadTexture("characters/strongDemon.png")};
+    // the code below need to make it more clean
+    runner.setScale(5.f);
+    runner.setFrame(12, 8);
+    runner.setMaxFrame(4);
+
+    normal.setMaxFrame(8);
+    normal.setScale(7);
+    normal.setFrame(11, 6);
+
+    little.setScale(5.f);
+    little.setFrame(10, 5);
+
+    strong.setScale(7.f);
+    strong.setFrame(14, 4);
+
+    super.setScale(10.f);
+    super.setFrame(13, 7);
+
+    knight.setMaxFrame(6.f);
+
+    // please clean the previous code
+
+    // slime.setMaxFrame(6.f);
+    // slime.setSpeed(6.5f);
+    // slime.setScale(5.5f);
+
+    // goblin.setSpeed(8.5f);
+    // goblin.setScale(5.f);
+    // goblin.setMaxFrame(6.f);
+
     Enemy *enemies[]{
-        &goblin,
-        &slime,
-        &demon,
-        &superDemon};
+        &little,
+        &runner,
+        &normal,
+        &strong,
+        &super};
     for (auto enemy : enemies)
     {
         // enemy->setTarget(&knight);
-        enemy->setKnight(&knight);
     }
 
     // super spaghetti code ei ei
@@ -112,6 +145,7 @@ int main()
             }
         }
     }
+
     // mapbound reference
     float landWidth{33 * tileSize + 20.f};
     float landHeight{18 * tileSize};
@@ -132,6 +166,7 @@ int main()
 
         // begin game logic
         mapPosition = Vector2Scale(knight.getWorldPosition(), -1.f);
+
         // draw the map
         DrawTextureEx(map, mapPosition, 0.0, mapScale, WHITE);
         if (coinCollected >= coinCounter)
@@ -148,7 +183,8 @@ int main()
             continue;
         }
         else
-        { // character is alive
+        {
+            // character is alive
             std ::string knightHealth = "Health: ";
             knightHealth.append(std ::to_string(knight.getHealth()), 0, 5);
             DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
@@ -161,6 +197,7 @@ int main()
             // showScore.append(std::to_string(score), 0, 4);
             // DrawText(showScore.c_str(), windowWidth - 550.f, 200.f, 40, WHITE);
         }
+
         // draw coin
         for (int i = 0; i < coinCounter; i++)
         {
@@ -172,6 +209,7 @@ int main()
                 score = coinCollected * 10;
             }
         }
+
         // draw the enemy
         for (auto enemy : enemies)
         {

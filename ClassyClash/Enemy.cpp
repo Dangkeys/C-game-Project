@@ -6,7 +6,10 @@ Enemy::Enemy(Vector2 pos, Texture2D idle_texture, Texture2D run_texture)
     texture = idle_texture;
     idle = idle_texture;
     run = run_texture;
-
+    UpdateTimeCounter = GetRandomValue(2,6);
+    patrolFirstFrame = GetRandomValue(0,1);
+    if(patrolFirstFrame == 0)
+        patrolSpeed *= -1;
     speed = 3.5f;
 }
 
@@ -41,12 +44,10 @@ void Enemy::tick(float deltaTime)
             velocity = Vector2Scale(Vector2Subtract(target->getScreenPosition(), getScreenPosition()), -1.f);
         if (isKnockFirstFrame)
         {
-            knockback = velocity;
+            knockbackVelocity = velocity;
             isKnockFirstFrame = false;
         }
-        if (target != NULL)
-            worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(knockback), target->getKnockBack()));
-
+        worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(knockbackVelocity), knockBack));
         if (isMapboundX)
             // knockback.x *= -1;
             undoMovementX();
