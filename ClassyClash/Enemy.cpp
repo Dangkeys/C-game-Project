@@ -6,11 +6,12 @@ Enemy::Enemy(Vector2 pos, Texture2D idle_texture, Texture2D run_texture)
     texture = idle_texture;
     idle = idle_texture;
     run = run_texture;
-    UpdateTimeCounter = GetRandomValue(2,6);
-    patrolFirstFrame = GetRandomValue(0,1);
-    if(patrolFirstFrame == 0)
+    UpdateTimeCounter = GetRandomValue(2, 6);
+    patrolFirstFrame = GetRandomValue(0, 1);
+    if (patrolFirstFrame == 0)
         patrolSpeed *= -1;
     speed = 3.5f;
+    health = 3.f;
 }
 
 void Enemy::tick(float deltaTime)
@@ -47,7 +48,7 @@ void Enemy::tick(float deltaTime)
             knockbackVelocity = velocity;
             isKnockFirstFrame = false;
         }
-        worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(knockbackVelocity), knockBack));
+        worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(knockbackVelocity), knockBackAmount));
         if (isMapboundX)
             // knockback.x *= -1;
             undoMovementX();
@@ -67,6 +68,7 @@ void Enemy::tick(float deltaTime)
         faceRightLastFrame = faceRight;
         if (target == NULL)
         {
+            // drawDetectRadius();
             timeCounter += deltaTime;
             if (isLeftbound)
             {
@@ -107,9 +109,19 @@ void Enemy::tick(float deltaTime)
         BaseCharacter ::tick(deltaTime);
         if (target != NULL)
         {
-            if (CheckCollisionRecs(target->getCollisionRec(), getCollisionRec()))
+            if (CheckCollisionRecs(target->getCollisionRec(), getCollisionRec())&&!(target->isHurt) )
             {
-                target->takeDamage(damagePerSec * deltaTime);
+                hurtTimeCounter += deltaTime;
+                if (hurtTimeCounter >= hurtUpdateTime)
+                {
+                    target->takeDamage(damage);
+                    target->isHurt = true;
+                    hurtTimeCounter = 0;
+                }
+            }
+            else
+            {
+                hurtTimeCounter = 0;
             }
         }
 
@@ -128,17 +140,14 @@ Vector2 Enemy ::getScreenPosition()
     }
 }
 
-void Enemy ::setActive()
-{
-    if (health <= 0)
-        setAlive(false);
-}
-void Enemy ::KnockBack()
-{
-    isKnockBack = true;
-    isKnockFirstFrame = true;
-}
+
+
 void Enemy::drawDetectRadius()
 {
-    DrawCircle(getScreenPosition().x + width * scale / 2, getScreenPosition().y + height * scale / 2, detectRadius, {230, 41, 50, 100});
+    DrawCircle(getScreenPosition().x + width * scale / 2, getScreenPosition().y + height * scale / 2,
+               detectRadius, {230, 41, 50, 100});
+}
+bool Enemy::isInDetectRadius(Rectangle knightRec)
+{
+    return CheckCollisionCircleRec({getDetectCenterX(), getDectectCenterY()}, detectRadius, knightRec);
 }

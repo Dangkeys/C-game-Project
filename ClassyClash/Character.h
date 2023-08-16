@@ -2,6 +2,8 @@
 #define CHARACTER_H
 #include "raylib.h"
 #include "BaseCharacter.h"
+
+#define NULL 00L
 class Character : public BaseCharacter
 {
 public:
@@ -21,7 +23,7 @@ private:
     Texture2D weapon{LoadTexture("characters/weapon_sword.png")};
     Rectangle weaponCollisionRec{};
     int coinCounter{};
-    float health{100.f};
+    float health{10};
 
     float swordScale{6.f};
     bool validMoveMentS{true};

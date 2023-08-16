@@ -6,6 +6,8 @@
 #include "Prop.h"
 #include "Mapbound.h"
 #include <string>
+
+//coin reference
 const int coinMax{391};
 const int sizeOfCoinWidth{31};
 const int sizeOfCoinHeight{15};
@@ -14,12 +16,17 @@ int coinCollected{};
 float scoreRunningTime{};
 float scoreUpdateTime{2};
 bool timeStart{false};
+
+//map references
 const float mapScale{4.0f};
 const int tileSize{mapScale * 32};
+
+//coin referemces
 PickUps coins[coinMax];
 Vector2 coinOffset{-50.f, 82.f};
 int score{};
 void setCoin(int i, int j);
+
 int main()
 {
     // window referencessssssssssssss
@@ -44,25 +51,25 @@ int main()
         LoadTexture("characters/slime_idle_spritesheet.png"),
         LoadTexture("characters/slime_run_spritesheet.png")};
     Enemy little{
-        Vector2{15 * tileSize, 5 * tileSize},
-        LoadTexture("characters/littleUndead.png"),
-        LoadTexture("characters/littleUndead.png")};
+        Vector2{20 * tileSize, 5 * tileSize},
+        LoadTexture("characters/littleOrc.png"),
+        LoadTexture("characters/littleOrc.png")};
     Enemy super{
-        Vector2{13 * tileSize, 7 * tileSize},
-        LoadTexture("characters/superDemon.png"),
-        LoadTexture("characters/superDemon.png")};
+        Vector2{20 * tileSize, 5 * tileSize},
+        LoadTexture("characters/superOrc.png"),
+        LoadTexture("characters/superOrc.png")};
     Enemy runner{
-        Vector2{12 * tileSize, 8 * tileSize},
-        LoadTexture("characters/runnerDemon.png"),
-        LoadTexture("characters/runnerDemon.png")};
+        Vector2{20 * tileSize, 20 * tileSize},
+        LoadTexture("characters/runnerOrc.png"),
+        LoadTexture("characters/runnerOrc.png")};
     Enemy normal{
-        Vector2{16 * tileSize, 6 * tileSize},
-        LoadTexture("characters/normalDemon.png"),
-        LoadTexture("characters/normalDemon.png")};
+        Vector2{15 * tileSize, 10 * tileSize},
+        LoadTexture("characters/normalOrc.png"),
+        LoadTexture("characters/normalOrc.png")};
     Enemy strong{
-        Vector2{14 * tileSize, 4 * tileSize},
-        LoadTexture("characters/strongDemon.png"),
-        LoadTexture("characters/strongDemon.png")};
+        Vector2{25 * tileSize, 15 * tileSize},
+        LoadTexture("characters/strongOrc.png"),
+        LoadTexture("characters/strongOrc.png")};
     // the code below need to make it more clean
     runner.setScale(5.f);
     runner.setFrame(12, 8);
@@ -178,7 +185,7 @@ int main()
 
         if (!knight.getAlive()) // character is dead
         {
-            DrawText("Game Over", 75.f, 55.f, 40, WHITE);
+            DrawText("Game Over", windowWidth / 2 - 50.f, windowHeight / 2 - 50.f, 40, WHITE);
             EndDrawing();
             continue;
         }
@@ -186,7 +193,7 @@ int main()
         {
             // character is alive
             std ::string knightHealth = "Health: ";
-            knightHealth.append(std ::to_string(knight.getHealth()), 0, 5);
+            knightHealth.append(std ::to_string(knight.getHealth()), 0, 4);
             DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
             std ::string coinCount = "Coin: ";
             coinCount.append(std ::to_string(coinCollected), 0, 3);
@@ -209,43 +216,67 @@ int main()
                 score = coinCollected * 10;
             }
         }
-
+        // draw character
+        knight.tick(GetFrameTime());
         // draw the enemy
         for (auto enemy : enemies)
         {
             enemy->setScreenPosition(knight.getWorldPosition());
             enemy->tick(GetFrameTime());
-            // enemy->drawDetectRadius();
-            if (CheckCollisionCircleRec(
-                    {enemy->getScreenPosition().x + enemy->getWidth() * enemy->getScale() / 2,
-                     enemy->getScreenPosition().y + enemy->getHeight() * enemy->getScale() / 2},
-                    enemy->getDetectRadius(),
-                    knight.getCollisionRec()))
-            {
-                enemy->setZeroTimeCounter();
-                enemy->setTarget(&knight);
-                enemy->setSpeed(6.5f);
-            }
-            else
-            {
-                enemy->setTarget(NULL);
-                enemy->setSpeed(2.f);
-            }
         }
+
+        // set the behavior for each type
+        little.setTarget(&knight);
+        little.setSpeed(9.f);
+        if (normal.isInDetectRadius(knight.getCollisionRec()))
+        {
+
+            normal.setZeroTimeCounter();
+            normal.setTarget(&knight);
+            normal.setSpeed(6.5f);
+        }
+        else
+        {
+
+            normal.setTarget(NULL);
+            normal.setSpeed(2.f);
+        }
+        strong.setTarget(&knight);
+        // runner.setSpeed(10.f);
+        // runner.setUpdateTimeCounter(0.25f);
+        if (runner.isInDetectRadius(knight.getCollisionRec()))
+        {
+            runner.setTarget(&knight);
+            runner.setSpeed(10.f);
+        }
+        if (super.isInDetectRadius(knight.getCollisionRec()))
+        {
+            super.setZeroTimeCounter();
+            super.setTarget(&knight);
+            super.setSpeed(6.f);
+        }
+        else
+        {
+            super.setTarget(NULL);
+            super.setSpeed(2.f);
+        }
+
+        // set the behavior for each type
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             // timeStart = true;
             for (auto enemy : enemies)
             {
-
                 if (CheckCollisionRecs(enemy->getCollisionRec(), knight.getWeaponCollisionRec()))
                 {
                     enemy->hurt();
-                    enemy->KnockBack();
+                    enemy->KnockBack(enemy->getKnockBackAmount());
                 }
             }
         }
+
+
         // if (timeStart)
         // {
         //     scoreRunningTime += GetFrameTime();
@@ -258,9 +289,6 @@ int main()
         // } else {
         //     knight.setInvisible(false);
         // }
-
-        // draw character
-        knight.tick(GetFrameTime());
 
         // check map bounds
         Vector2 worldPosition = knight.getWorldPosition();

@@ -17,7 +17,6 @@ void BaseCharacter::undoMovementY()
 Rectangle BaseCharacter::getCollisionRec()
 {
     return Rectangle{
-
         getScreenPosition().x,
         getScreenPosition().y,
         width * scale,
@@ -59,10 +58,36 @@ void BaseCharacter::tick(float deltaTime)
     Rectangle dest{getScreenPosition().x, getScreenPosition().y, scale * width, scale * height};
     if (isInvisible)
     {
-        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, {255,255,255, 100});
+        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, {255, 255, 255, 100});
+    }
+    else if (isHurt)
+    {
+        hurtRunningTime += deltaTime;
+        DrawTexturePro(texture, source, dest, Vector2{}, 0.f, {255, 255, 255, 100});
+        if (hurtRunningTime >= hurtUpdateTIme)
+        {
+            hurtRunningTime = 0;
+            isHurt = false;
+        }
     }
     else
     {
         DrawTexturePro(texture, source, dest, Vector2{}, 0.f, WHITE);
     }
+}
+void BaseCharacter ::KnockBack(float setterKnockBackAmount)
+{
+    isKnockBack = true;
+    isKnockFirstFrame = true;
+    knockBackAmount = setterKnockBackAmount;
+}
+void BaseCharacter ::setActive()
+{
+    if (health <= 0)
+        setAlive(false);
+}
+void BaseCharacter::setKnockback(Vector2 setter, float setDealKnockBack)
+{
+    knockbackVelocity = setter;
+    dealKnockBack = setDealKnockBack;
 }

@@ -6,6 +6,7 @@ class BaseCharacter
 {
 public:
     BaseCharacter();
+    bool isHurt{false};
     Vector2 getWorldPosition() { return worldPosition; }
     void undoMovement() { worldPosition = worldPositionLastFrame; }
     void undoMovementX();
@@ -19,8 +20,12 @@ public:
     void setAlive(bool isAlive) { alive = isAlive; }
     float getFaceRight() { return faceRight; }
     float getScale() { return scale; }
-    void setUpdateTime(float time) { updateTime = time;}
-    void setFrame(int x, int y) {frame = (x+y) % maxFrame;}
+    void setUpdateTime(float time) { updateTime = time; }
+    void setFrame(int x, int y) { frame = (x + y) % maxFrame; }
+    void KnockBack(float setterKnockBackAmount);
+    float getKnockBackAmount() { return knockBackAmount; }
+    void setActive();
+    void setKnockback(Vector2 setter, float setDealKnockBack);
 
 protected:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
@@ -31,6 +36,7 @@ protected:
     // 1 : facing right, -1 : facing left
     float faceRight{1.f};
     // animation variables
+    float health{10};
     float runningTime{};
     int frame{};
     int maxFrame{8};
@@ -41,6 +47,19 @@ protected:
     float scale{7.f};
     Vector2 velocity{};
     bool isInvisible{false};
+
+    float hurtRunningTime{};
+    float hurtUpdateTIme{0.2f};
+
+
+    bool isKnockBack{};
+    float knockBackTime{};
+    float knockBackUpdateTime{1.f / 4.f};
+    bool isKnockFirstFrame{false};
+    float faceRightLastFrame{};
+    float dealKnockBack{10.f};
+    Vector2 knockbackVelocity{};
+    float knockBackAmount{15.f};
 
 private:
     bool alive{true};
