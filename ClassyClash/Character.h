@@ -7,6 +7,7 @@
 class Character : public BaseCharacter
 {
 public:
+    bool canAttack{true};
     Character(int windowWidth, int windowHeight);
     void tick(float deltaTime);
     virtual Vector2 getScreenPosition() override;
@@ -18,6 +19,9 @@ public:
     void setScale(float setScale) {scale = setScale;}
     void setInvisible(bool invisible){isInvisible = invisible;}
 private:
+    float attackDuration{0.3f};
+    float attackRunningTime{};
+    float flipRunningTime{};
     int windowWidth{};
     int windowHeight{};
     Texture2D weapon{LoadTexture("characters/weapon_sword.png")};
@@ -29,7 +33,7 @@ private:
     bool validMoveMentS{true};
     Vector2 swordOffset{};
     Vector2 swordOffsetRight{79.f, 83.f};;
-    Vector2 swordOffsetLeft{30.f, 83.f};
+    Vector2 swordOffsetLeft{32.f, 83.f};
 
 };
 #endif

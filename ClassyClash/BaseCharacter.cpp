@@ -26,7 +26,7 @@ Rectangle BaseCharacter::getCollisionRec()
 void BaseCharacter::tick(float deltaTime)
 {
     worldPositionLastFrame = worldPosition;
-
+    
     // update animation frame
     runningTime += deltaTime;
     if (runningTime >= updateTime)
@@ -85,9 +85,4 @@ void BaseCharacter ::setActive()
 {
     if (health <= 0)
         setAlive(false);
-}
-void BaseCharacter::setKnockback(Vector2 setter, float setDealKnockBack)
-{
-    knockbackVelocity = setter;
-    dealKnockBack = setDealKnockBack;
 }

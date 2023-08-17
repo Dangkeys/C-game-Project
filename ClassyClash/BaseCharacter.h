@@ -23,9 +23,11 @@ public:
     void setUpdateTime(float time) { updateTime = time; }
     void setFrame(int x, int y) { frame = (x + y) % maxFrame; }
     void KnockBack(float setterKnockBackAmount);
+    void setKnockBackUpdateTime(float setter) {knockBackUpdateTime = setter;}
     float getKnockBackAmount() { return knockBackAmount; }
+    void setKnockBackAmount(float setter) {knockBackAmount = setter;}
+    void setHealth(float setter) {health = setter;}
     void setActive();
-    void setKnockback(Vector2 setter, float setDealKnockBack);
 
 protected:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
@@ -36,7 +38,7 @@ protected:
     // 1 : facing right, -1 : facing left
     float faceRight{1.f};
     // animation variables
-    float health{10};
+    float health{3};
     float runningTime{};
     int frame{};
     int maxFrame{8};
@@ -59,7 +61,7 @@ protected:
     float faceRightLastFrame{};
     float dealKnockBack{10.f};
     Vector2 knockbackVelocity{};
-    float knockBackAmount{15.f};
+    float knockBackAmount{20.f};
 
 private:
     bool alive{true};

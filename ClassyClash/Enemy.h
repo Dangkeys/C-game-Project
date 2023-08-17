@@ -22,29 +22,34 @@ public:
     virtual void tick(float deltaTime) override;
     void setTarget(Character *character) { target = character; }
     void hurt() { health--; };
- 
+
     void setScale(float setScale) { scale = setScale; }
     void setScreenPosition(Vector2 knightPosition) { screenPosition = Vector2Subtract(worldPosition, knightPosition); }
     virtual Vector2 getScreenPosition() override;
     void collideWithMapboundX() { isMapboundX = true; }
     void collideWithMapboundY() { isMapboundY = true; }
     void collideWithLeftbound() { isLeftbound = true; }
+    // void noCollideWithLeftbound() { isLeftbound = false; }
+    // void noCollideWithRightbond() { isRightbound = false; }
     void collideWithRightbound() { isRightbound = true; }
+
     void collideWithBottombound() { isBottombound = true; }
     void noCollideWithBottombound() { isBottombound = false; }
     void drawDetectRadius();
     void setZeroTimeCounter() { timeCounter = 0.f; }
     void setDetectRadius(float setter) { detectRadius = setter; }
-    void setDealKnockBack(float setter) {dealKnockBack = setter;}
     bool isInDetectRadius(Rectangle knightRec);
     void setUpdateTimeCounter(float setter) { UpdateTimeCounter = setter; }
-    void addHurtTimeCounter(float deltaTime) {hurtTimeCounter += deltaTime;}
-    float getHurtTimeCounter() {return hurtTimeCounter;}
-    float getHurtUpdateTimeCounter() {return hurtUpdateTime;}
-    float getDamage() {return damage;}
-    float getDealKnockBack() {return dealKnockBack;}
-    Character *getTarget() {return target;}
-    void setZeroHurtTimeCounter() {hurtTimeCounter = 0;}
+    void addHurtTimeCounter(float deltaTime) { hurtTimeCounter += deltaTime; }
+    float getHurtTimeCounter() { return hurtTimeCounter; }
+    float getHurtUpdateTimeCounter() { return hurtUpdateTime; }
+    float getDamage() { return damage; }
+    void setDamage(float setter) { damage = setter; }
+    float getDealKnockBack() { return dealKnockBack; }
+    Character *getTarget() { return target; }
+    void setZeroHurtTimeCounter() { hurtTimeCounter = 0; }
+    void setDetectRaduis(float setter) { detectRadius = setter; }
+
     // void setDamageHealthSpeed(float dam)
 protected:
     float getDetectCenterX() { return screenPosition.x + width * scale / 2; }
@@ -67,8 +72,9 @@ protected:
 
     int patrolFirstFrame{};
     float hurtTimeCounter{};
-    float hurtUpdateTime{0.4f};
+    float hurtUpdateTime{0.2f};
 
 private:
+    float tileSize{32 * 4};
 };
 #endif

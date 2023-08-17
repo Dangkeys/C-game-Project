@@ -3,6 +3,7 @@
 Character ::Character(int winWidth, int winHeight) : windowWidth(winWidth),
                                                      windowHeight(winHeight)
 {
+    health = 10.f;
 }
 Vector2 Character ::getScreenPosition()
 {
@@ -20,6 +21,7 @@ void Character ::takeDamage(float damage)
 }
 void Character ::tick(float deltaTime)
 {
+
     width = texture.width / maxFrame;
     height = texture.height;
     swordScale = scale - 1;
@@ -39,6 +41,33 @@ void Character ::tick(float deltaTime)
     BaseCharacter ::tick(deltaTime);
     Vector2 origin{};
     float rotation{};
+    if (!canAttack)
+    {
+        flipRunningTime += deltaTime;
+        attackRunningTime += deltaTime;    
+        if (attackRunningTime >= attackDuration)
+        {
+            attackRunningTime = 0;
+            canAttack = true;
+            rotation += 30;
+            rotation = 0;
+        }
+        if (faceRight > 0.f)
+        {
+            if (flipRunningTime >= attackDuration/24)
+            {
+                flipRunningTime = 0;
+                rotation += 30;
+            }
+        } else
+        {
+            if (flipRunningTime >= attackDuration/24)
+            {
+                flipRunningTime = 0;
+                rotation -= 30;
+            }
+        }
+    }
     if (faceRight > 0.f)
     {
         origin = {0.f, swordScale * weapon.height};
@@ -48,7 +77,7 @@ void Character ::tick(float deltaTime)
             getScreenPosition().y + swordOffset.y - weapon.height * swordScale,
             weapon.width * swordScale,
             weapon.height * swordScale};
-        rotation = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? 35.f : 0.f;
+        // rotation = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && canAttack ? 35.f : 0.f;
     }
     else
     {
@@ -59,7 +88,7 @@ void Character ::tick(float deltaTime)
             getScreenPosition().y + swordOffset.y - weapon.height * swordScale,
             weapon.width * swordScale,
             weapon.height * swordScale};
-        rotation = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? -35.f : 0.f;
+        // rotation = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && canAttack ? -35.f : 0.f;
     }
     Rectangle source{0.f, 0.f, static_cast<float>(weapon.width) * faceRight, static_cast<float>(weapon.height)};
     Rectangle dest{getScreenPosition().x + swordOffset.x, getScreenPosition().y + swordOffset.y, swordScale * weapon.width, swordScale * weapon.height};

@@ -7,7 +7,7 @@
 #include "Mapbound.h"
 #include <string>
 
-//coin reference
+// coin reference
 const int coinMax{391};
 const int sizeOfCoinWidth{31};
 const int sizeOfCoinHeight{15};
@@ -17,11 +17,11 @@ float scoreRunningTime{};
 float scoreUpdateTime{2};
 bool timeStart{false};
 
-//map references
+// map references
 const float mapScale{4.0f};
 const int tileSize{mapScale * 32};
 
-//coin referemces
+// coin referemces
 PickUps coins[coinMax];
 Vector2 coinOffset{-50.f, 82.f};
 int score{};
@@ -42,14 +42,6 @@ int main()
     Character knight{windowWidth, windowHeight};
 
     // enemy references
-    Enemy goblin{
-        Vector2{20 * tileSize, 9 * tileSize},
-        LoadTexture("characters/goblin_idle_spritesheet.png"),
-        LoadTexture("characters/goblin_run_spritesheet.png")};
-    Enemy slime{
-        Vector2{17 * tileSize, 11 * tileSize},
-        LoadTexture("characters/slime_idle_spritesheet.png"),
-        LoadTexture("characters/slime_run_spritesheet.png")};
     Enemy little{
         Vector2{20 * tileSize, 5 * tileSize},
         LoadTexture("characters/littleOrc.png"),
@@ -71,34 +63,60 @@ int main()
         LoadTexture("characters/strongOrc.png"),
         LoadTexture("characters/strongOrc.png")};
     // the code below need to make it more clean
-    runner.setScale(5.f);
-    runner.setFrame(12, 8);
-    runner.setMaxFrame(4);
-
-    normal.setMaxFrame(8);
-    normal.setScale(7);
-    normal.setFrame(11, 6);
-
+    little.setDamage(0.5f);
+    little.setHealth(2.f);
+    little.setSpeed(9.f);
     little.setScale(5.f);
-    little.setFrame(10, 5);
+    little.setDetectRadius(0.f);
+    little.setKnockBackAmount(20.f);
+    little.setUpdateTimeCounter(GetRandomValue(2, 6));
+    little.setMaxFrame(8);
+    little.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
 
-    strong.setScale(7.f);
-    strong.setFrame(14, 4);
+    normal.setDamage(1.f);
+    normal.setHealth(4.f);
+    normal.setSpeed(4.f);
+    normal.setScale(7.f);
+    normal.setDetectRadius(500.f);
+    normal.setKnockBackAmount(10.f);
+    normal.setUpdateTimeCounter(GetRandomValue(2, 8));
+    normal.setMaxFrame(8);
+    normal.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
 
-    super.setScale(10.f);
-    super.setFrame(13, 7);
+    runner.setDamage(2.f);
+    runner.setHealth(3.f);
+    runner.setSpeed(7.f);
+    runner.setScale(6.f);
+    runner.setDetectRadius(300.f);
+    runner.setKnockBackAmount(15.f);
+    runner.setUpdateTimeCounter(GetRandomValue(2, 6));
+    runner.setMaxFrame(8);
+    runner.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+
+    strong.setDamage(1.5f);
+    strong.setHealth(6.f);
+    strong.setSpeed(5.5f);
+    strong.setScale(8.f);
+    strong.setDetectRadius(0.f);
+    strong.setKnockBackAmount(5.f);
+    strong.setKnockBackUpdateTime(0.1f);
+    strong.setUpdateTimeCounter(GetRandomValue(2, 6));
+    strong.setMaxFrame(8);
+    strong.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+
+    super.setDamage(4.f);
+    super.setHealth(10.f);
+    super.setSpeed(6.f);
+    super.setScale(9.f);
+    super.setDetectRadius(400.f);
+    super.setKnockBackAmount(2.5f);
+    super.setKnockBackUpdateTime(0.05f);
+    super.setFrame(10, 5);
+    super.setUpdateTimeCounter(GetRandomValue(2, 6));
+    super.setMaxFrame(8);
+    super.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
 
     knight.setMaxFrame(6.f);
-
-    // please clean the previous code
-
-    // slime.setMaxFrame(6.f);
-    // slime.setSpeed(6.5f);
-    // slime.setScale(5.5f);
-
-    // goblin.setSpeed(8.5f);
-    // goblin.setScale(5.f);
-    // goblin.setMaxFrame(6.f);
 
     Enemy *enemies[]{
         &little,
@@ -106,10 +124,6 @@ int main()
         &normal,
         &strong,
         &super};
-    for (auto enemy : enemies)
-    {
-        // enemy->setTarget(&knight);
-    }
 
     // super spaghetti code ei ei
     // set coin to the right position
@@ -227,28 +241,28 @@ int main()
 
         // set the behavior for each type
         little.setTarget(&knight);
-        little.setSpeed(9.f);
+
+        strong.setTarget(&knight);
+
         if (normal.isInDetectRadius(knight.getCollisionRec()))
         {
 
             normal.setZeroTimeCounter();
             normal.setTarget(&knight);
-            normal.setSpeed(6.5f);
+            normal.setSpeed(6.f);
         }
         else
         {
-
             normal.setTarget(NULL);
-            normal.setSpeed(2.f);
+            normal.setSpeed(4.f);
         }
-        strong.setTarget(&knight);
-        // runner.setSpeed(10.f);
-        // runner.setUpdateTimeCounter(0.25f);
+
         if (runner.isInDetectRadius(knight.getCollisionRec()))
         {
             runner.setTarget(&knight);
-            runner.setSpeed(10.f);
+            runner.setSpeed(12.f);
         }
+
         if (super.isInDetectRadius(knight.getCollisionRec()))
         {
             super.setZeroTimeCounter();
@@ -263,8 +277,9 @@ int main()
 
         // set the behavior for each type
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && knight.canAttack)
         {
+            knight.canAttack = false;
             // timeStart = true;
             for (auto enemy : enemies)
             {
@@ -275,7 +290,6 @@ int main()
                 }
             }
         }
-
 
         // if (timeStart)
         // {
@@ -338,6 +352,8 @@ int main()
             else
                 enemy->noCollideWithBottombound();
         }
+        //when player hurt red screen will appear
+        //DrawRectangle(0, 0, windowWidth * 500, windowHeight * 500, {231, 41, 55, 5.f * (10 - knight.getHealth())});
         // end game logic
         EndDrawing();
     }
