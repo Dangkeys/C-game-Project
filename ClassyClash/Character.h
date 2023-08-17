@@ -33,7 +33,7 @@ private:
     bool validMoveMentS{true};
     Vector2 swordOffset{};
     Vector2 swordOffsetRight{79.f, 83.f};;
-    Vector2 swordOffsetLeft{32.f, 83.f};
+    Vector2 swordOffsetLeft{35.f, 83.f};
 
 };
 #endif

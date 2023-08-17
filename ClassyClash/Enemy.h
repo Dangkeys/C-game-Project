@@ -18,7 +18,7 @@
 class Enemy : public BaseCharacter
 {
 public:
-    Enemy(Vector2 position, Texture2D idle, Texture2D run);
+    Enemy();
     virtual void tick(float deltaTime) override;
     void setTarget(Character *character) { target = character; }
     void hurt() { health--; };
@@ -32,7 +32,6 @@ public:
     // void noCollideWithLeftbound() { isLeftbound = false; }
     // void noCollideWithRightbond() { isRightbound = false; }
     void collideWithRightbound() { isRightbound = true; }
-
     void collideWithBottombound() { isBottombound = true; }
     void noCollideWithBottombound() { isBottombound = false; }
     void drawDetectRadius();
@@ -49,7 +48,8 @@ public:
     Character *getTarget() { return target; }
     void setZeroHurtTimeCounter() { hurtTimeCounter = 0; }
     void setDetectRaduis(float setter) { detectRadius = setter; }
-
+    void setWorldPosition(Vector2 setter) {worldPosition = setter;}
+    void setTexture(Texture2D setter) {texture = setter;}
     // void setDamageHealthSpeed(float dam)
 protected:
     float getDetectCenterX() { return screenPosition.x + width * scale / 2; }

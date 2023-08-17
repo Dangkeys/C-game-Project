@@ -8,9 +8,11 @@
 #include <string>
 
 // coin reference
-const int coinMax{391};
+const int MAX{391};
 const int sizeOfCoinWidth{31};
 const int sizeOfCoinHeight{15};
+const int ENEMYMAX{50};
+const int TYPEMAX{10};
 int coinCounter{};
 int coinCollected{};
 float scoreRunningTime{};
@@ -22,10 +24,17 @@ const float mapScale{4.0f};
 const int tileSize{mapScale * 32};
 
 // coin referemces
-PickUps coins[coinMax];
+PickUps coins[MAX];
 Vector2 coinOffset{-50.f, 82.f};
 int score{};
 void setCoin(int i, int j);
+
+// spawner references
+float spawerRunningTime{21.f};
+float nextSpawnTime{20.f};
+int enemyPerWave{1};
+int enemySize{0};
+int enemyCounter{};
 
 int main()
 {
@@ -40,90 +49,14 @@ int main()
 
     // knight references
     Character knight{windowWidth, windowHeight};
-
     // enemy references
-    Enemy little{
-        Vector2{20 * tileSize, 5 * tileSize},
-        LoadTexture("characters/littleOrc.png"),
-        LoadTexture("characters/littleOrc.png")};
-    Enemy super{
-        Vector2{20 * tileSize, 5 * tileSize},
-        LoadTexture("characters/superOrc.png"),
-        LoadTexture("characters/superOrc.png")};
-    Enemy runner{
-        Vector2{20 * tileSize, 20 * tileSize},
-        LoadTexture("characters/runnerOrc.png"),
-        LoadTexture("characters/runnerOrc.png")};
-    Enemy normal{
-        Vector2{15 * tileSize, 10 * tileSize},
-        LoadTexture("characters/normalOrc.png"),
-        LoadTexture("characters/normalOrc.png")};
-    Enemy strong{
-        Vector2{25 * tileSize, 15 * tileSize},
-        LoadTexture("characters/strongOrc.png"),
-        LoadTexture("characters/strongOrc.png")};
-    // the code below need to make it more clean
-    little.setDamage(0.5f);
-    little.setHealth(2.f);
-    little.setSpeed(9.f);
-    little.setScale(5.f);
-    little.setDetectRadius(0.f);
-    little.setKnockBackAmount(20.f);
-    little.setUpdateTimeCounter(GetRandomValue(2, 6));
-    little.setMaxFrame(8);
-    little.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
-
-    normal.setDamage(1.f);
-    normal.setHealth(4.f);
-    normal.setSpeed(4.f);
-    normal.setScale(7.f);
-    normal.setDetectRadius(500.f);
-    normal.setKnockBackAmount(10.f);
-    normal.setUpdateTimeCounter(GetRandomValue(2, 8));
-    normal.setMaxFrame(8);
-    normal.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
-
-    runner.setDamage(2.f);
-    runner.setHealth(3.f);
-    runner.setSpeed(7.f);
-    runner.setScale(6.f);
-    runner.setDetectRadius(300.f);
-    runner.setKnockBackAmount(15.f);
-    runner.setUpdateTimeCounter(GetRandomValue(2, 6));
-    runner.setMaxFrame(8);
-    runner.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
-
-    strong.setDamage(1.5f);
-    strong.setHealth(6.f);
-    strong.setSpeed(5.5f);
-    strong.setScale(8.f);
-    strong.setDetectRadius(0.f);
-    strong.setKnockBackAmount(5.f);
-    strong.setKnockBackUpdateTime(0.1f);
-    strong.setUpdateTimeCounter(GetRandomValue(2, 6));
-    strong.setMaxFrame(8);
-    strong.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
-
-    super.setDamage(4.f);
-    super.setHealth(10.f);
-    super.setSpeed(6.f);
-    super.setScale(9.f);
-    super.setDetectRadius(400.f);
-    super.setKnockBackAmount(2.5f);
-    super.setKnockBackUpdateTime(0.05f);
-    super.setFrame(10, 5);
-    super.setUpdateTimeCounter(GetRandomValue(2, 6));
-    super.setMaxFrame(8);
-    super.setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+    Enemy little[TYPEMAX];
+    Enemy super[TYPEMAX];
+    Enemy runner[TYPEMAX];
+    Enemy normal[TYPEMAX];
+    Enemy strong[TYPEMAX];
 
     knight.setMaxFrame(6.f);
-
-    Enemy *enemies[]{
-        &little,
-        &runner,
-        &normal,
-        &strong,
-        &super};
 
     // super spaghetti code ei ei
     // set coin to the right position
@@ -188,6 +121,88 @@ int main()
         // begin game logic
         mapPosition = Vector2Scale(knight.getWorldPosition(), -1.f);
 
+        // spawner logic
+        spawerRunningTime += GetFrameTime();
+        if (spawerRunningTime >= nextSpawnTime)
+        {
+            enemySize += enemyPerWave;
+            spawerRunningTime = 0;
+            for (int i = 0; i < enemySize; i++)
+            {
+                int randomTribeLittle{}
+
+
+
+
+                little[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
+                                                               (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
+                little[enemySize - 1].setTexture(LoadTexture("characters/littleOrc.png"));
+                little[enemySize - 1].setDamage(0.5f);
+                little[enemySize - 1].setHealth(2.f);
+                little[enemySize - 1].setSpeed(9.f);
+                little[enemySize - 1].setScale(5.f);
+                little[enemySize - 1].setDetectRadius(0.f);
+                little[enemySize - 1].setKnockBackAmount(20.f);
+                little[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 6));
+                little[enemySize - 1].setMaxFrame(8);
+                little[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+                normal[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
+                                                               (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
+                normal[enemySize - 1].setTexture(LoadTexture("characters/normalOrc.png"));
+                normal[enemySize - 1].setDamage(1.f);
+                normal[enemySize - 1].setHealth(4.f);
+                normal[enemySize - 1].setSpeed(4.f);
+                normal[enemySize - 1].setScale(7.f);
+                normal[enemySize - 1].setDetectRadius(500.f);
+                normal[enemySize - 1].setKnockBackAmount(10.f);
+                normal[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 8));
+                normal[enemySize - 1].setMaxFrame(8);
+                normal[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+
+                runner[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
+                                                               (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
+                runner[enemySize - 1].setTexture(LoadTexture("characters/runnerOrc.png"));
+                runner[enemySize - 1].setDamage(2.f);
+                runner[enemySize - 1].setHealth(3.f);
+                runner[enemySize - 1].setSpeed(7.f);
+                runner[enemySize - 1].setScale(6.f);
+                runner[enemySize - 1].setDetectRadius(300.f);
+                runner[enemySize - 1].setKnockBackAmount(15.f);
+                runner[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 6));
+                runner[enemySize - 1].setMaxFrame(8);
+                runner[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+
+                strong[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
+                                                               (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
+                strong[enemySize - 1].setTexture(LoadTexture("characters/strongOrc.png"));
+                strong[enemySize - 1].setDamage(1.5f);
+                strong[enemySize - 1].setHealth(6.f);
+                strong[enemySize - 1].setSpeed(5.5f);
+                strong[enemySize - 1].setScale(8.f);
+                strong[enemySize - 1].setDetectRadius(0.f);
+                strong[enemySize - 1].setKnockBackAmount(5.f);
+                strong[enemySize - 1].setKnockBackUpdateTime(0.1f);
+                strong[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 6));
+                strong[enemySize - 1].setMaxFrame(8);
+                strong[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+
+                super[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
+                                                              (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
+                super[enemySize - 1].setTexture(LoadTexture("characters/superOrc.png"));
+                super[enemySize - 1].setDamage(4.f);
+                super[enemySize - 1].setHealth(10.f);
+                super[enemySize - 1].setSpeed(6.f);
+                super[enemySize - 1].setScale(10.f);
+                super[enemySize - 1].setDetectRadius(400.f);
+                super[enemySize - 1].setKnockBackAmount(0.1f);
+                super[enemySize - 1].setKnockBackUpdateTime(0.05f);
+                super[enemySize - 1].setFrame(10, 5);
+                super[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 6));
+                super[enemySize - 1].setMaxFrame(8);
+                super[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 19));
+            }
+        }
+
         // draw the map
         DrawTextureEx(map, mapPosition, 0.0, mapScale, WHITE);
         if (coinCollected >= coinCounter)
@@ -233,46 +248,59 @@ int main()
         // draw character
         knight.tick(GetFrameTime());
         // draw the enemy
-        for (auto enemy : enemies)
+        for (int i = 0; i < enemySize; i++)
         {
-            enemy->setScreenPosition(knight.getWorldPosition());
-            enemy->tick(GetFrameTime());
+            little[i].setScreenPosition(knight.getWorldPosition());
+            little[i].tick(GetFrameTime());
+            normal[i].setScreenPosition(knight.getWorldPosition());
+            normal[i].tick(GetFrameTime());
+            runner[i].setScreenPosition(knight.getWorldPosition());
+            runner[i].tick(GetFrameTime());
+            strong[i].setScreenPosition(knight.getWorldPosition());
+            strong[i].tick(GetFrameTime());
+            super[i].setScreenPosition(knight.getWorldPosition());
+            super[i].tick(GetFrameTime());
         }
 
-        // set the behavior for each type
-        little.setTarget(&knight);
-
-        strong.setTarget(&knight);
-
-        if (normal.isInDetectRadius(knight.getCollisionRec()))
+        for (int i = 0; i < enemySize; i++)
         {
-
-            normal.setZeroTimeCounter();
-            normal.setTarget(&knight);
-            normal.setSpeed(6.f);
-        }
-        else
-        {
-            normal.setTarget(NULL);
-            normal.setSpeed(4.f);
+            strong[i].setTarget(&knight);
+            little[i].setTarget(&knight);
         }
 
-        if (runner.isInDetectRadius(knight.getCollisionRec()))
+        for (int i = 0; i < enemySize; i++)
         {
-            runner.setTarget(&knight);
-            runner.setSpeed(12.f);
-        }
+            if (normal[i].isInDetectRadius(knight.getCollisionRec()))
+            {
 
-        if (super.isInDetectRadius(knight.getCollisionRec()))
-        {
-            super.setZeroTimeCounter();
-            super.setTarget(&knight);
-            super.setSpeed(6.f);
+                normal[i].setZeroTimeCounter();
+                normal[i].setTarget(&knight);
+                normal[i].setSpeed(6.f);
+            }
+            else
+            {
+                normal[i].setTarget(NULL);
+                normal[i].setSpeed(4.f);
+            }
+            if (super[i].isInDetectRadius(knight.getCollisionRec()))
+            {
+                super[i].setZeroTimeCounter();
+                super[i].setTarget(&knight);
+                super[i].setSpeed(6.f);
+            }
+            else
+            {
+                super[i].setTarget(NULL);
+                super[i].setSpeed(2.f);
+            }
         }
-        else
+        for (int i = 0; i < enemySize; i++)
         {
-            super.setTarget(NULL);
-            super.setSpeed(2.f);
+            if (runner[i].isInDetectRadius(knight.getCollisionRec()))
+            {
+                runner[i].setTarget(&knight);
+                runner[i].setSpeed(12.f);
+            }
         }
 
         // set the behavior for each type
@@ -281,12 +309,32 @@ int main()
         {
             knight.canAttack = false;
             // timeStart = true;
-            for (auto enemy : enemies)
+            for (int i = 0; i < enemySize; i++)
             {
-                if (CheckCollisionRecs(enemy->getCollisionRec(), knight.getWeaponCollisionRec()))
+                if (CheckCollisionRecs(little[i].getCollisionRec(), knight.getWeaponCollisionRec()))
                 {
-                    enemy->hurt();
-                    enemy->KnockBack(enemy->getKnockBackAmount());
+                    little[i].hurt();
+                    little[i].KnockBack(little[i].getKnockBackAmount());
+                }
+                if (CheckCollisionRecs(normal[i].getCollisionRec(), knight.getWeaponCollisionRec()))
+                {
+                    normal[i].hurt();
+                    normal[i].KnockBack(normal[i].getKnockBackAmount());
+                }
+                if (CheckCollisionRecs(runner[i].getCollisionRec(), knight.getWeaponCollisionRec()))
+                {
+                    runner[i].hurt();
+                    runner[i].KnockBack(runner[i].getKnockBackAmount());
+                }
+                if (CheckCollisionRecs(strong[i].getCollisionRec(), knight.getWeaponCollisionRec()))
+                {
+                    strong[i].hurt();
+                    strong[i].KnockBack(strong[i].getKnockBackAmount());
+                }
+                if (CheckCollisionRecs(super[i].getCollisionRec(), knight.getWeaponCollisionRec()))
+                {
+                    super[i].hurt();
+                    super[i].KnockBack(super[i].getKnockBackAmount());
                 }
             }
         }
@@ -327,34 +375,77 @@ int main()
         }
         for (auto mapbound : mapboundsX)
         {
-            for (auto enemy : enemies)
+            for (int i = 0; i < enemySize; i++)
             {
-                if (CheckCollisionRecs(enemy->getCollisionRec(), mapbound->getCollisionRec()))
-                    enemy->collideWithMapboundX();
+                if (CheckCollisionRecs(little[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    little[i].collideWithMapboundX();
+                if (CheckCollisionRecs(normal[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    normal[i].collideWithMapboundX();
+                if (CheckCollisionRecs(runner[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    runner[i].collideWithMapboundX();
+                if (CheckCollisionRecs(strong[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    strong[i].collideWithMapboundX();
+                if (CheckCollisionRecs(super[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    super[i].collideWithMapboundX();
             }
         }
         for (auto mapbound : mapboundsY)
         {
-            for (auto enemy : enemies)
+            for (int i = 0; i < enemySize; i++)
             {
-                if (CheckCollisionRecs(enemy->getCollisionRec(), mapbound->getCollisionRec()))
-                    enemy->collideWithMapboundY();
+                if (CheckCollisionRecs(little[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    little[i].collideWithMapboundX();
+                if (CheckCollisionRecs(normal[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    normal[i].collideWithMapboundX();
+                if (CheckCollisionRecs(runner[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    runner[i].collideWithMapboundX();
+                if (CheckCollisionRecs(strong[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    strong[i].collideWithMapboundX();
+                if (CheckCollisionRecs(super[i].getCollisionRec(), mapbound->getCollisionRec()))
+                    super[i].collideWithMapboundX();
             }
         }
-        for (auto enemy : enemies)
+        // if (CheckCollisionRecs(enemy->getCollisionRec(), leftbound.getCollisionRec()))
+        //     enemy->collideWithLeftbound();
+        // if (CheckCollisionRecs(enemy->getCollisionRec(), rightbound.getCollisionRec()))
+        //     enemy->collideWithRightbound();
+        // if (CheckCollisionRecs(enemy->getCollisionRec(), lowerbound.getCollisionRec()))
+        //     enemy->collideWithBottombound();
+        // else
+        //     enemy->noCollideWithBottombound();}
+        for (int i = 0; i < enemySize; i++)
         {
-            if (CheckCollisionRecs(enemy->getCollisionRec(), leftbound.getCollisionRec()))
-                enemy->collideWithLeftbound();
-            if (CheckCollisionRecs(enemy->getCollisionRec(), rightbound.getCollisionRec()))
-                enemy->collideWithRightbound();
-            if (CheckCollisionRecs(enemy->getCollisionRec(), lowerbound.getCollisionRec()))
-                enemy->collideWithBottombound();
+            if (CheckCollisionRecs(little[i].getCollisionRec(), leftbound.getCollisionRec()))
+                little[i].collideWithLeftbound();
+            if (CheckCollisionRecs(normal[i].getCollisionRec(), leftbound.getCollisionRec()))
+                normal[i].collideWithLeftbound();
+            if (CheckCollisionRecs(runner[i].getCollisionRec(), leftbound.getCollisionRec()))
+                runner[i].collideWithLeftbound();
+            if (CheckCollisionRecs(strong[i].getCollisionRec(), leftbound.getCollisionRec()))
+                strong[i].collideWithLeftbound();
+            if (CheckCollisionRecs(super[i].getCollisionRec(), leftbound.getCollisionRec()))
+                super[i].collideWithLeftbound();
+
+            if (CheckCollisionRecs(little[i].getCollisionRec(), rightbound.getCollisionRec()))
+                little[i].collideWithRightbound();
+            if (CheckCollisionRecs(normal[i].getCollisionRec(), rightbound.getCollisionRec()))
+                normal[i].collideWithRightbound();
+            if (CheckCollisionRecs(runner[i].getCollisionRec(), rightbound.getCollisionRec()))
+                runner[i].collideWithRightbound();
+            if (CheckCollisionRecs(strong[i].getCollisionRec(), rightbound.getCollisionRec()))
+                strong[i].collideWithRightbound();
+            if (CheckCollisionRecs(super[i].getCollisionRec(), rightbound.getCollisionRec()))
+                super[i].collideWithRightbound();
+
+            if (CheckCollisionRecs(super[i].getCollisionRec(), lowerbound.getCollisionRec()))
+                super[i].collideWithBottombound();
             else
-                enemy->noCollideWithBottombound();
+                super[i].noCollideWithBottombound();
         }
-        //when player hurt red screen will appear
-        //DrawRectangle(0, 0, windowWidth * 500, windowHeight * 500, {231, 41, 55, 5.f * (10 - knight.getHealth())});
-        // end game logic
+        // when player hurt red screen will appear
+        if (knight.isHurt)
+            DrawRectangle(0, 0, windowWidth * 500, windowHeight * 500, {231, 41, 55, 50});
+        //  end game logic
         EndDrawing();
     }
 }

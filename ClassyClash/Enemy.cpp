@@ -1,21 +1,16 @@
 #include "Enemy.h"
 #include "raymath.h"
-Enemy::Enemy(Vector2 pos, Texture2D idle_texture, Texture2D run_texture)
+Enemy::Enemy()
 {
-    worldPosition = pos;
-    texture = idle_texture;
-    idle = idle_texture;
-    run = run_texture;
-    UpdateTimeCounter = GetRandomValue(2, 6);
     patrolFirstFrame = GetRandomValue(0, 1);
     if (patrolFirstFrame == 0)
         patrolSpeed *= -1;
-    speed = 3.5f;
-    health = 3.f;
 }
 
 void Enemy::tick(float deltaTime)
 {
+    idle = texture;
+    run = texture;
     width = texture.width / maxFrame;
     height = texture.height;
     if (!getAlive())
@@ -80,7 +75,7 @@ void Enemy::tick(float deltaTime)
             {
                 timeCounter = 0;
                 patrolSpeed = 10000000;
-                isRightbound = false;  
+                isRightbound = false;
             }
             if (timeCounter >= UpdateTimeCounter)
             {
@@ -109,7 +104,7 @@ void Enemy::tick(float deltaTime)
         BaseCharacter ::tick(deltaTime);
         if (target != NULL)
         {
-            if (CheckCollisionRecs(target->getCollisionRec(), getCollisionRec())&&!(target->isHurt) )
+            if (CheckCollisionRecs(target->getCollisionRec(), getCollisionRec()) && !(target->isHurt))
             {
                 hurtTimeCounter += deltaTime;
                 if (hurtTimeCounter >= hurtUpdateTime)
@@ -139,8 +134,6 @@ Vector2 Enemy ::getScreenPosition()
         return Vector2Subtract(worldPosition, target->getWorldPosition());
     }
 }
-
-
 
 void Enemy::drawDetectRadius()
 {
