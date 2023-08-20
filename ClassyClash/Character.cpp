@@ -3,6 +3,7 @@
 Character ::Character(int winWidth, int winHeight) : windowWidth(winWidth),
                                                      windowHeight(winHeight)
 {
+    setAlive(true);
     health = 10.f;
 }
 Vector2 Character ::getScreenPosition()
@@ -41,33 +42,6 @@ void Character ::tick(float deltaTime)
     BaseCharacter ::tick(deltaTime);
     Vector2 origin{};
     float rotation{};
-    if (!canAttack)
-    {
-        flipRunningTime += deltaTime;
-        attackRunningTime += deltaTime;    
-        if (attackRunningTime >= attackDuration)
-        {
-            attackRunningTime = 0;
-            canAttack = true;
-            rotation += 30;
-            rotation = 0;
-        }
-        if (faceRight > 0.f)
-        {
-            if (flipRunningTime >= attackDuration/24)
-            {
-                flipRunningTime = 0;
-                rotation += 30;
-            }
-        } else
-        {
-            if (flipRunningTime >= attackDuration/24)
-            {
-                flipRunningTime = 0;
-                rotation -= 30;
-            }
-        }
-    }
     if (faceRight > 0.f)
     {
         origin = {0.f, swordScale * weapon.height};
@@ -90,9 +64,35 @@ void Character ::tick(float deltaTime)
             weapon.height * swordScale};
         // rotation = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && canAttack ? -35.f : 0.f;
     }
+
     Rectangle source{0.f, 0.f, static_cast<float>(weapon.width) * faceRight, static_cast<float>(weapon.height)};
     Rectangle dest{getScreenPosition().x + swordOffset.x, getScreenPosition().y + swordOffset.y, swordScale * weapon.width, swordScale * weapon.height};
-    DrawTexturePro(weapon, source, dest, origin, rotation, WHITE);
+    if (!canAttack)
+    {
+        flipRunningTime += deltaTime;
+        attackRunningTime += deltaTime;
+        if (attackRunningTime >= attackDuration)
+        {
+            attackRunningTime = 0;
+            canAttack = true;
+            rotation += 30;
+            rotation = 0;
+        }
+        if (faceRight > 0.f)
+        {
+            rotation = 30;
+        }
+        else
+        {
+            rotation = -30;
+        }
+        DrawTexturePro(weapon, source, dest, origin, rotation, {255, 255, 255, 100});
+    }
+    else
+    {
+        DrawTexturePro(weapon, source, dest, origin, rotation, WHITE);
+    }
+
     // DrawRectangleLines(
     //     weaponCollisionRec.x,
     //     weaponCollisionRec.y,

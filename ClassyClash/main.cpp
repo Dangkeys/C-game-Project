@@ -11,8 +11,7 @@
 const int MAX{391};
 const int sizeOfCoinWidth{31};
 const int sizeOfCoinHeight{15};
-const int ENEMYMAX{50};
-const int TYPEMAX{10};
+const int TYPEMAX{15};
 int coinCounter{};
 int coinCollected{};
 float scoreRunningTime{};
@@ -27,14 +26,18 @@ const int tileSize{mapScale * 32};
 PickUps coins[MAX];
 Vector2 coinOffset{-50.f, 82.f};
 int score{};
-void setCoin(int i, int j);
+
 
 // spawner references
-float spawerRunningTime{21.f};
-float nextSpawnTime{20.f};
+float spawerRunningTime{26.f};
+float nextSpawnTime{10.f};
 int enemyPerWave{1};
 int enemySize{0};
 int enemyCounter{};
+
+//coin references
+void setCoin(int i, int j);
+void setPositionCoin();
 
 int main()
 {
@@ -42,6 +45,12 @@ int main()
     const int windowWidth{1950};
     const int windowHeight{1100};
     InitWindow(windowWidth, windowHeight, "Classyclash!");
+    Enemy little[TYPEMAX]{};
+    Enemy super[TYPEMAX]{};
+    Enemy runner[TYPEMAX]{};
+    Enemy normal[TYPEMAX]{};
+    Enemy strong[TYPEMAX]{};
+
 
     // map references
     Texture2D map = LoadTexture("nature_tileset/realMap.png");
@@ -50,55 +59,12 @@ int main()
     // knight references
     Character knight{windowWidth, windowHeight};
     // enemy references
-    Enemy little[TYPEMAX];
-    Enemy super[TYPEMAX];
-    Enemy runner[TYPEMAX];
-    Enemy normal[TYPEMAX];
-    Enemy strong[TYPEMAX];
 
     knight.setMaxFrame(6.f);
 
     // super spaghetti code ei ei
     // set coin to the right position
-    for (int i = 0; i < sizeOfCoinWidth; i++)
-    {
-        for (int j = 0; j < sizeOfCoinHeight; j++)
-        {
-            // no draw the same horizontal line
-            bool isValidDraw{!(
-                j == 0 || j == 4 ||
-                j == 8 || j == 11 ||
-                j == 13 || j == 14)};
-            if ((j == 0) && (i < 14 || i > 16))
-                setCoin(i, j);
-            else if (j == 4)
-                setCoin(i, j);
-            else if ((j == 6 || j == 10) && (i >= 11 && i < 20))
-                setCoin(i, j);
-            else if (j == 8 && ((i >= 0 && i <= 11) || (i >= sizeOfCoinWidth - 12 && i < sizeOfCoinWidth)))
-                setCoin(i, j);
-            else if (j == 11 && ((i >= 0 && i < 4) ||
-                                 (i >= sizeOfCoinWidth - 4 && i < sizeOfCoinWidth) || i == 6 || i == sizeOfCoinWidth - 7 || i == 15))
-                setCoin(i, j);
-            else if (j == 13 && ((i > 5 && i < sizeOfCoinWidth - 6) || i == 3 || i == sizeOfCoinWidth - 4))
-                setCoin(i, j);
-            else if (j == 14 && ((i >= 3 && i <= 6) || (i > sizeOfCoinWidth - 8 && i < sizeOfCoinWidth - 3)))
-                setCoin(i, j);
-            else if (isValidDraw)
-            {
-                if ((i == 0 || i == sizeOfCoinWidth - 1) && j != 12)
-                    setCoin(i, j);
-                if (i == 6 || i == sizeOfCoinWidth - 7)
-                    setCoin(i, j);
-                if ((i == 13 || i == 17) && j <= 4)
-                    setCoin(i, j);
-                if ((i == 11 || i == 19) && (j == 7 || j == 9))
-                    setCoin(i, j);
-                if ((i == 15 || i == 3 || i == sizeOfCoinWidth - 4) && j == 12)
-                    setCoin(i, j);
-            }
-        }
-    }
+    setPositionCoin();
 
     // mapbound reference
     float landWidth{33 * tileSize + 20.f};
@@ -115,9 +81,9 @@ int main()
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+         
         BeginDrawing();
         ClearBackground(WHITE);
-
         // begin game logic
         mapPosition = Vector2Scale(knight.getWorldPosition(), -1.f);
 
@@ -125,59 +91,135 @@ int main()
         spawerRunningTime += GetFrameTime();
         if (spawerRunningTime >= nextSpawnTime)
         {
+
             enemySize += enemyPerWave;
             spawerRunningTime = 0;
+            if (enemySize >= TYPEMAX)
+                break;
             for (int i = 0; i < enemySize; i++)
             {
-                int randomTribeLittle{}
-
-
-
+                int randomTribeLittle{GetRandomValue(1, 3)};
+                int randomTribeNormal{GetRandomValue(1, 3)};
+                int randomTribeRunner{GetRandomValue(1, 3)};
+                int randomTribeStrong{GetRandomValue(1, 3)};
+                int randomTribeSuper{GetRandomValue(1, 3)};
 
                 little[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
                                                                (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
-                little[enemySize - 1].setTexture(LoadTexture("characters/littleOrc.png"));
+                if (randomTribeLittle == 1)
+                {
+                    little[enemySize - 1].setTexture(LoadTexture("characters/littleOrc.png"));
+                    little[enemySize - 1].setSpeed(9.f);
+                }
+
+                else if (randomTribeLittle == 2)
+                {
+                    little[enemySize - 1].setTexture(LoadTexture("characters/littleDemon.png"));
+                    little[enemySize - 1].setSpeed(10.f);
+                }
+                else
+                {
+                    little[enemySize - 1].setTexture(LoadTexture("characters/littleUndead.png"));
+                    little[enemySize - 1].setSpeed(8.f);
+                }
+                little[enemySize - 1].setAlive(true);
                 little[enemySize - 1].setDamage(0.5f);
                 little[enemySize - 1].setHealth(2.f);
-                little[enemySize - 1].setSpeed(9.f);
+
                 little[enemySize - 1].setScale(5.f);
                 little[enemySize - 1].setDetectRadius(0.f);
                 little[enemySize - 1].setKnockBackAmount(20.f);
                 little[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 6));
                 little[enemySize - 1].setMaxFrame(8);
                 little[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
+
                 normal[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
                                                                (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
-                normal[enemySize - 1].setTexture(LoadTexture("characters/normalOrc.png"));
+
+                if (randomTribeNormal == 1)
+                {
+                    normal[enemySize - 1].setSpeed(4.f);
+                    normal[enemySize - 1].setTexture(LoadTexture("characters/normalOrc.png"));
+                }
+                else if (randomTribeNormal == 2)
+                {
+                    normal[enemySize - 1].setSpeed(5.f);
+                    normal[enemySize - 1].setTexture(LoadTexture("characters/normalDemon.png"));
+                }
+
+                else
+                {
+                    normal[enemySize - 1].setSpeed(3.f);
+                    normal[enemySize - 1].setTexture(LoadTexture("characters/normalUndead.png"));
+                }
+                normal[enemySize - 1].setAlive(true);
                 normal[enemySize - 1].setDamage(1.f);
                 normal[enemySize - 1].setHealth(4.f);
-                normal[enemySize - 1].setSpeed(4.f);
+
                 normal[enemySize - 1].setScale(7.f);
                 normal[enemySize - 1].setDetectRadius(500.f);
                 normal[enemySize - 1].setKnockBackAmount(10.f);
                 normal[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 8));
-                normal[enemySize - 1].setMaxFrame(8);
+                if (randomTribeNormal == 3)
+                    normal[enemySize - 1].setMaxFrame(4);
+                else
+                    normal[enemySize - 1].setMaxFrame(8);
                 normal[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
 
                 runner[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
                                                                (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
-                runner[enemySize - 1].setTexture(LoadTexture("characters/runnerOrc.png"));
+
+                if (randomTribeRunner == 1)
+                {
+                    runner[enemySize - 1].setSpeed(7.f);
+                    runner[enemySize - 1].setTexture(LoadTexture("characters/runnerOrc.png"));
+                }
+                else if (randomTribeRunner == 2)
+                {
+                    runner[enemySize - 1].setSpeed(8.f);
+                    runner[enemySize - 1].setTexture(LoadTexture("characters/runnerDemon.png"));
+                }
+                else
+                {
+                    runner[enemySize - 1].setSpeed(5.f);
+                    runner[enemySize - 1].setTexture(LoadTexture("characters/runnerUndead.png"));
+                }
+                runner[enemySize - 1].setAlive(true);
                 runner[enemySize - 1].setDamage(2.f);
                 runner[enemySize - 1].setHealth(3.f);
-                runner[enemySize - 1].setSpeed(7.f);
+
                 runner[enemySize - 1].setScale(6.f);
                 runner[enemySize - 1].setDetectRadius(300.f);
-                runner[enemySize - 1].setKnockBackAmount(15.f);
+                runner[enemySize - 1].setKnockBackAmount(10.f);
                 runner[enemySize - 1].setUpdateTimeCounter(GetRandomValue(2, 6));
-                runner[enemySize - 1].setMaxFrame(8);
+                if (randomTribeRunner == 2)
+                    runner[enemySize - 1].setMaxFrame(4);
+                else
+                    runner[enemySize - 1].setMaxFrame(8);
+
                 runner[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
 
                 strong[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
                                                                (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
-                strong[enemySize - 1].setTexture(LoadTexture("characters/strongOrc.png"));
+                if (randomTribeStrong == 1)
+                {
+                    strong[enemySize - 1].setSpeed(4.5f);
+                    strong[enemySize - 1].setTexture(LoadTexture("characters/strongOrc.png"));
+                }
+                else if (randomTribeStrong == 2)
+                {
+                    strong[enemySize - 1].setSpeed(5.5f);
+                    strong[enemySize - 1].setTexture(LoadTexture("characters/strongDemon.png"));
+                }
+                else
+                {
+                    strong[enemySize - 1].setSpeed(3.5f);
+                    strong[enemySize - 1].setTexture(LoadTexture("characters/strongUndead.png"));
+                }
+                strong[enemySize - 1].setAlive(true);
                 strong[enemySize - 1].setDamage(1.5f);
                 strong[enemySize - 1].setHealth(6.f);
-                strong[enemySize - 1].setSpeed(5.5f);
+
                 strong[enemySize - 1].setScale(8.f);
                 strong[enemySize - 1].setDetectRadius(0.f);
                 strong[enemySize - 1].setKnockBackAmount(5.f);
@@ -187,8 +229,14 @@ int main()
                 strong[enemySize - 1].setFrame(GetRandomValue(9, 40), GetRandomValue(5, 20));
 
                 super[enemySize - 1].setWorldPosition(Vector2{(float)GetRandomValue(9 * tileSize, 40 * tileSize),
-                                                              (float)GetRandomValue(5 * tileSize, 20 * tileSize)});
-                super[enemySize - 1].setTexture(LoadTexture("characters/superOrc.png"));
+                                                              (float)GetRandomValue(5 * tileSize, 19 * tileSize)});
+                if (randomTribeSuper == 1)
+                    super[enemySize - 1].setTexture(LoadTexture("characters/superOrc.png"));
+                else if (randomTribeSuper == 2)
+                    super[enemySize - 1].setTexture(LoadTexture("characters/superDemon.png"));
+                else
+                    super[enemySize - 1].setTexture(LoadTexture("characters/superUndead.png"));
+                super[enemySize - 1].setAlive(true);
                 super[enemySize - 1].setDamage(4.f);
                 super[enemySize - 1].setHealth(10.f);
                 super[enemySize - 1].setSpeed(6.f);
@@ -275,7 +323,7 @@ int main()
 
                 normal[i].setZeroTimeCounter();
                 normal[i].setTarget(&knight);
-                normal[i].setSpeed(6.f);
+                normal[i].setSpeed(5.f);
             }
             else
             {
@@ -286,7 +334,7 @@ int main()
             {
                 super[i].setZeroTimeCounter();
                 super[i].setTarget(&knight);
-                super[i].setSpeed(6.f);
+                super[i].setSpeed(4.f);
             }
             else
             {
@@ -364,9 +412,9 @@ int main()
             knight.undoMovementY();
         }
         if (CheckCollisionRecs(knight.getCollisionRec(), lowerbound.getCollisionRec()))
-            knight.undoMovementS();
+            knight.validMoveMentS = false;
         else
-            knight.doMovements();
+            knight.validMoveMentS = true;
 
         // mapbound mechanic
         for (auto mapbound : mapbounds)
@@ -441,6 +489,18 @@ int main()
                 super[i].collideWithBottombound();
             else
                 super[i].noCollideWithBottombound();
+            if (CheckCollisionRecs(strong[i].getCollisionRec(), lowerbound.getCollisionRec()))
+                strong[i].collideWithBottombound();
+            else
+                strong[i].noCollideWithBottombound();
+            if (CheckCollisionRecs(normal[i].getCollisionRec(), lowerbound.getCollisionRec()))
+                normal[i].collideWithBottombound();
+            else
+                normal[i].noCollideWithBottombound();
+            if (CheckCollisionRecs(super[i].getCollisionRec(), lowerbound.getCollisionRec()))
+                super[i].collideWithBottombound();
+            else
+                super[i].noCollideWithBottombound();
         }
         // when player hurt red screen will appear
         if (knight.isHurt)
@@ -457,4 +517,46 @@ void setCoin(int i, int j)
                                                 (5.f + j) * tileSize + coinOffset.y});
     coins[coinCounter].setFrame((i + j) % coins[coinCounter].getMaxFrame());
     coinCounter++;
+}
+void setPositionCoin()
+{
+    for (int i = 0; i < sizeOfCoinWidth; i++)
+    {
+        for (int j = 0; j < sizeOfCoinHeight; j++)
+        {
+            // no draw the same horizontal line
+            bool isValidDraw{!(
+                j == 0 || j == 4 ||
+                j == 8 || j == 11 ||
+                j == 13 || j == 14)};
+            if ((j == 0) && (i < 14 || i > 16))
+                setCoin(i, j);
+            else if (j == 4)
+                setCoin(i, j);
+            else if ((j == 6 || j == 10) && (i >= 11 && i < 20))
+                setCoin(i, j);
+            else if (j == 8 && ((i >= 0 && i <= 11) || (i >= sizeOfCoinWidth - 12 && i < sizeOfCoinWidth)))
+                setCoin(i, j);
+            else if (j == 11 && ((i >= 0 && i < 4) ||
+                                 (i >= sizeOfCoinWidth - 4 && i < sizeOfCoinWidth) || i == 6 || i == sizeOfCoinWidth - 7 || i == 15))
+                setCoin(i, j);
+            else if (j == 13 && ((i > 5 && i < sizeOfCoinWidth - 6) || i == 3 || i == sizeOfCoinWidth - 4))
+                setCoin(i, j);
+            else if (j == 14 && ((i >= 3 && i <= 6) || (i > sizeOfCoinWidth - 8 && i < sizeOfCoinWidth - 3)))
+                setCoin(i, j);
+            else if (isValidDraw)
+            {
+                if ((i == 0 || i == sizeOfCoinWidth - 1) && j != 12)
+                    setCoin(i, j);
+                if (i == 6 || i == sizeOfCoinWidth - 7)
+                    setCoin(i, j);
+                if ((i == 13 || i == 17) && j <= 4)
+                    setCoin(i, j);
+                if ((i == 11 || i == 19) && (j == 7 || j == 9))
+                    setCoin(i, j);
+                if ((i == 15 || i == 3 || i == sizeOfCoinWidth - 4) && j == 12)
+                    setCoin(i, j);
+            }
+        }
+    }
 }

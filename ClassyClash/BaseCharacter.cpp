@@ -1,8 +1,5 @@
 #include "BaseCharacter.h"
 #include "raymath.h"
-BaseCharacter::BaseCharacter()
-{
-}
 
 void BaseCharacter::undoMovementX()
 {

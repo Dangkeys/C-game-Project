@@ -5,10 +5,8 @@
 class BaseCharacter
 {
 public:
-    BaseCharacter();
     bool isHurt{false};
     Vector2 getWorldPosition() { return worldPosition; }
-    void undoMovement() { worldPosition = worldPositionLastFrame; }
     void undoMovementX();
     void undoMovementY();
     Rectangle getCollisionRec();
@@ -53,7 +51,7 @@ protected:
     float hurtRunningTime{};
     float hurtUpdateTIme{0.2f};
 
-
+    //use only in enemy
     bool isKnockBack{};
     float knockBackTime{};
     float knockBackUpdateTime{1.f / 4.f};
@@ -64,7 +62,7 @@ protected:
     float knockBackAmount{20.f};
 
 private:
-    bool alive{true};
+    bool alive{false};
 };
 
-#endif
+#endif +
