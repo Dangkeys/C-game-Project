@@ -3,6 +3,7 @@
 
 void BaseCharacter::Update(float deltaTime)
 {
+    faceRightLastFrame = faceRight;
     worldPositionLastFrame = worldPosition;
     UpdateAnimation(deltaTime);
     UpdateIsHurt(deltaTime);
@@ -50,10 +51,12 @@ void BaseCharacter::Hurt(float takeDamageAmount)
     {
         health -= takeDamageAmount;
         isHurt = true;
+        isHurtFirstFrame = true;
     }
 }
 void BaseCharacter::ResetToFirstFrame()
 {
+    isHurtFirstFrame = false;
     isHurt = false;
     hurtRunningTime = 0;
     moveDirectionTo = {0,0};

@@ -252,7 +252,7 @@ int main()
 
         // draw the map
         DrawTextureEx(map, mapPosition, 0.0, mapScale, WHITE);
-        if (coinCollected >= coinCounter)   
+        if (coinCollected >= coinCounter)
         {
             DrawText("You win", windowWidth / 2 - 100, windowHeight / 2 - 100, 64, WHITE);
             EndDrawing();

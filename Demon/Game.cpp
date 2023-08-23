@@ -7,15 +7,21 @@ Game::Game(int winWidth, int winHeight) : windowWidth(winWidth),
 }
 void Game::Update(float deltaTime)
 {
+    little.SetTarget(&player);
     if (coinCollected >= coinCounter)
         isNextWave = true;
     if (!player.GetAlive())
         isGameEnd = true;
     map.Update(player.GetWorldPosition());
     player.Update(deltaTime);
+    little.Update(deltaTime);
     PlayerMapboundMechanic();
     UpdateCoin(deltaTime);
     UI();
+}
+void Game::AttackEnemy()
+{
+    if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) && player.canAttack)
 }
 void Game::UpdateCoin(float deltaTime)
 {

@@ -63,7 +63,7 @@ void Enemy::tick(float deltaTime)
         faceRightLastFrame = faceRight;
         if (target == NULL)
         {
-            drawDetectRadius();
+            // drawDetectRadius();
             timeCounter += deltaTime;
             if (isLeftbound)
             {
@@ -101,7 +101,12 @@ void Enemy::tick(float deltaTime)
         }
         if (Vector2Length(velocity) < radius)
             velocity = {};
+
+        
         BaseCharacter ::tick(deltaTime);
+        
+        
+        
         if (target != NULL)
         {
             if (CheckCollisionRecs(target->getCollisionRec(), getCollisionRec()) && !(target->isHurt))

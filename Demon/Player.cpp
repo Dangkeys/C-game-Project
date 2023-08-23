@@ -11,6 +11,7 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
     scale = 7.f;
     health = 10.f;
     alive = true;
+    dealDamageAmount = 1.f;
     movementSpeed = 8.f;
     drawPosition = {static_cast<float>(windowWidth) / 2 - GetDrawWidth() / 2, static_cast<float>(windowHeight) / 2 - GetDrawHeight() / 2};
     swordScale = scale - 1.f;
@@ -34,6 +35,8 @@ void Player::Update(float deltaTime)
     SetAttackAnimation(deltaTime);
     BaseCharacter::Update(deltaTime);
     DrawSword();
+    if(isHurt)
+        DrawRectangle(0,0, 5000, 5000, {255,0,0, 50});
 }
 void Player::UpdateMovement()
 {

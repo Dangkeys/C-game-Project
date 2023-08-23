@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "Mapbound.h"
 #include "Coin.h"
+#include "Little.h"
 #include <string>
 #define COINMAX 189
 class Game
@@ -18,6 +19,7 @@ public:
     bool isNextWave{false};
 
 private:
+    void AttackEnemy();
     void UI();
     void ResetCoin();
     void UpdateCoin(float deltaTime);
@@ -37,7 +39,7 @@ private:
     int score{};
     int coinCollected{};
     int coinCounter{};
-    
+    Little little;
     Vector2 coinOffset{-50.f, 82.f};
 
     // player bound
