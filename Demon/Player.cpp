@@ -4,7 +4,7 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
 {
     windowWidth = winWidth;
     windowHeight = winHeight;
-    animationMaxFrame = 6;
+    animationMaxFrame = 6.f;
     texture = sprite;
     textureWidth = texture.width / animationMaxFrame;
     textureHeight = texture.height;
@@ -12,31 +12,38 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
     health = 10.f;
     alive = true;
     movementSpeed = 8.f;
+    drawPosition = {static_cast<float>(windowWidth) / 2 - GetDrawWidth() / 2, static_cast<float>(windowHeight) / 2 - GetDrawHeight() / 2};
     swordScale = scale - 1.f;
     swordOffset = {-5 * swordScale, 0};
-    drawPosition = {static_cast<float>(windowWidth) / 2 - GetDrawWidth() / 2, static_cast<float>(windowHeight)/ 2 - GetDrawHeight() / 2};
     swordCollision = {
-            drawPosition.x + GetDrawWidth() * faceRight + swordOffset.x,
-            drawPosition.y + GetDrawSwordHeight()*(0.8f),
-            GetDrawSwordWidth(),
-            GetDrawSwordHeight()};
+        drawPosition.x + GetDrawWidth() * faceRight + swordOffset.x,
+        drawPosition.y + GetDrawSwordHeight() * (0.8f),
+        GetDrawSwordWidth(),
+        GetDrawSwordHeight()};
+    swordColor = WHITE;
 }
 void Player::Update(float deltaTime)
 {
+    if (health <= 0)
+    {
+        alive = false;
+        return;
+    }
     UpdateMovement();
     ChangeAnimationState();
+    SetAttackAnimation(deltaTime);
     BaseCharacter::Update(deltaTime);
     DrawSword();
 }
 void Player::UpdateMovement()
 {
-    if (IsKeyDown(KEY_A))
+    if (IsKeyDown(KEY_A) && isValidA)
         moveDirectionTo.x -= 1.0;
-    if (IsKeyDown(KEY_D))
+    if (IsKeyDown(KEY_D) && isValidD)
         moveDirectionTo.x += 1.0;
-    if (IsKeyDown(KEY_W))
+    if (IsKeyDown(KEY_W) && isValidW)
         moveDirectionTo.y -= 1.0;
-    if (IsKeyDown(KEY_S))
+    if (IsKeyDown(KEY_S) && isValidS)
         moveDirectionTo.y += 1.0;
 }
 void Player::ChangeAnimationState()
@@ -49,22 +56,53 @@ void Player::ChangeAnimationState()
 
 void Player::DrawSword()
 {
-    Vector2 origin{};
-    float rotatation{};
+
     if (faceRight > 0.f)
     {
-        swordCollision.x = drawPosition.x + GetDrawWidth()+ swordOffset.x;
-        origin = {0.f, GetDrawSwordHeight()};
+        swordCollision.x = drawPosition.x + GetDrawWidth() + swordOffset.x;
+        swordOrigin = {0.f, GetDrawSwordHeight()};
     }
-        
+
     else
     {
         swordCollision.x = drawPosition.x - swordOffset.x;
-        origin = {GetDrawSwordWidth(), GetDrawSwordHeight()};
+        swordOrigin = {GetDrawSwordWidth(), GetDrawSwordHeight()};
     }
-    
-    
-    Rectangle source{0.f, 0.f,  sword.width* faceRight, sword.height};
+
+    Rectangle source{0.f, 0.f, sword.width * faceRight, sword.height};
     Rectangle dest{swordCollision};
-    DrawTexturePro(sword, source, dest, origin, rotatation, WHITE);
+    DrawTexturePro(sword, source, dest, swordOrigin, swordRotation, swordColor);
+}
+void Player::SetAttackAnimation(float deltaTime)
+{
+    if (canAttack)
+        return;
+    canAttackRunningTime += deltaTime;
+    swordColor = FADE;
+    faceRight > 0.f ? swordRotation = 3 *swordScale : swordRotation = -3 * swordScale;
+    if (canAttackRunningTime >= canAttackUpdateTime)
+    {
+        canAttack = true;
+        canAttackRunningTime = 0;
+        swordColor = WHITE;
+        swordRotation = 0.f;
+    }
+}
+
+void Player::ResetToFirstFrame()
+{
+    health = 10.f;
+    alive = true;
+    ResetNextWave();
+}
+void Player::ResetNextWave()
+{
+    canAttack = true;
+    canAttackRunningTime = 0;
+    scale = 7.f;
+    movementSpeed = 8.f;
+    worldPosition = {};
+    worldPositionLastFrame = {};
+    moveDirectionTo = {};
+    drawPosition = {static_cast<float>(windowWidth) / 2 - GetDrawWidth() / 2, static_cast<float>(windowHeight) / 2 - GetDrawHeight() / 2};
 }

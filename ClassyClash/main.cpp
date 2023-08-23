@@ -58,8 +58,7 @@ int main()
 
     // knight references
     Character knight{windowWidth, windowHeight};
-    // enemy references
-
+    knight.SetHurtUpdateTime(0.35f);
     knight.setMaxFrame(6.f);
 
     // super spaghetti code ei ei
@@ -154,7 +153,7 @@ int main()
                 }
                 normal[enemySize - 1].setAlive(true);
                 normal[enemySize - 1].setDamage(1.f);
-                normal[enemySize - 1].setHealth(4.f);
+                normal[enemySize - 1].setHealth(3.f);
 
                 normal[enemySize - 1].setScale(7.f);
                 normal[enemySize - 1].setDetectRadius(500.f);
@@ -218,7 +217,7 @@ int main()
                 }
                 strong[enemySize - 1].setAlive(true);
                 strong[enemySize - 1].setDamage(1.5f);
-                strong[enemySize - 1].setHealth(6.f);
+                strong[enemySize - 1].setHealth(5.f);
 
                 strong[enemySize - 1].setScale(8.f);
                 strong[enemySize - 1].setDetectRadius(0.f);
@@ -253,7 +252,7 @@ int main()
 
         // draw the map
         DrawTextureEx(map, mapPosition, 0.0, mapScale, WHITE);
-        if (coinCollected >= coinCounter)
+        if (coinCollected >= coinCounter)   
         {
             DrawText("You win", windowWidth / 2 - 100, windowHeight / 2 - 100, 64, WHITE);
             EndDrawing();
@@ -353,7 +352,7 @@ int main()
 
         // set the behavior for each type
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && knight.canAttack)
+        if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) && knight.canAttack)
         {
             knight.canAttack = false;
             // timeStart = true;
@@ -516,6 +515,7 @@ void setCoin(int i, int j)
     coins[coinCounter].setWorldPosition(Vector2{(9.f + i) * tileSize + coinOffset.x,
                                                 (5.f + j) * tileSize + coinOffset.y});
     coins[coinCounter].setFrame((i + j) % coins[coinCounter].getMaxFrame());
+    coins[coinCounter].setActive(true);
     coinCounter++;
 }
 void setPositionCoin()

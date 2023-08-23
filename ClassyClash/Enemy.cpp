@@ -63,7 +63,7 @@ void Enemy::tick(float deltaTime)
         faceRightLastFrame = faceRight;
         if (target == NULL)
         {
-
+            drawDetectRadius();
             timeCounter += deltaTime;
             if (isLeftbound)
             {

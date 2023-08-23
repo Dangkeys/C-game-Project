@@ -26,6 +26,7 @@ public:
     void setKnockBackAmount(float setter) {knockBackAmount = setter;}
     void setHealth(float setter) {health = setter;}
     void setActive();
+    void SetHurtUpdateTime(float setter) {hurtUpdateTIme = setter;}
 
 protected:
     Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
