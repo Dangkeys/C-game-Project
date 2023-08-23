@@ -11,6 +11,7 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
     scale = 7.f;
     health = 10.f;
     alive = true;
+    hurtUpdateTime = 0.2f;
     dealDamageAmount = 1.f;
     movementSpeed = 8.f;
     drawPosition = {static_cast<float>(windowWidth) / 2 - GetDrawWidth() / 2, static_cast<float>(windowHeight) / 2 - GetDrawHeight() / 2};
@@ -23,6 +24,15 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
         GetDrawSwordHeight()};
     swordColor = WHITE;
 }
+Rectangle Player::GetDrawSwordCollision()
+{
+    if (faceRight > 0.f)
+    {
+        return Rectangle{swordCollision.x, swordCollision.y - GetDrawSwordHeight(),swordCollision.width,swordCollision.height};
+    }
+    return Rectangle{swordCollision.x - GetDrawSwordWidth(), swordCollision.y - GetDrawSwordHeight(),swordCollision.width,swordCollision.height};
+}
+
 void Player::Update(float deltaTime)
 {
     if (health <= 0)
@@ -31,12 +41,15 @@ void Player::Update(float deltaTime)
         return;
     }
     UpdateMovement();
+    if (moveDirectionTo.x != 0)
+        moveDirectionTo.x < 0.f ? faceRight = -1 : faceRight = 1;
     ChangeAnimationState();
     SetAttackAnimation(deltaTime);
     BaseCharacter::Update(deltaTime);
     DrawSword();
-    if(isHurt)
-        DrawRectangle(0,0, 5000, 5000, {255,0,0, 50});
+    
+    if (isHurt)
+        DrawRectangle(0, 0, 5000, 5000, {255, 0, 0, 50});
 }
 void Player::UpdateMovement()
 {
@@ -75,6 +88,8 @@ void Player::DrawSword()
     Rectangle source{0.f, 0.f, sword.width * faceRight, sword.height};
     Rectangle dest{swordCollision};
     DrawTexturePro(sword, source, dest, swordOrigin, swordRotation, swordColor);
+    //draw player sword collision
+    // DrawRectangleLines(GetDrawSwordCollision().x, GetDrawSwordCollision().y, GetDrawSwordCollision().width, GetDrawSwordCollision().height, RED);
 }
 void Player::SetAttackAnimation(float deltaTime)
 {

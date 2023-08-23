@@ -3,16 +3,15 @@
 
 void BaseCharacter::Update(float deltaTime)
 {
-    faceRightLastFrame = faceRight;
     worldPositionLastFrame = worldPosition;
     UpdateAnimation(deltaTime);
     UpdateIsHurt(deltaTime);
-    if(health <= 0) return;
+    if (health <= 0)
+        return;
     worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(moveDirectionTo), movementSpeed));
-    if (moveDirectionTo.x != 0)
-        moveDirectionTo.x < 0.f ? faceRight = -1 : faceRight = 1;
     moveDirectionTo = {0, 0};
     DrawCharacter();
+    DrawRectangleLines(drawPosition.x, drawPosition.y,GetDrawWidth(),GetDrawHeight(), RED);
 }
 void BaseCharacter::UpdateAnimation(float deltaTime)
 {
@@ -30,14 +29,14 @@ void BaseCharacter::DrawCharacter()
     Rectangle source{animationFrame * textureWidth, 0.f, faceRight * textureWidth, textureHeight};
     Rectangle dest{drawPosition.x, drawPosition.y, GetDrawWidth(), GetDrawHeight()};
     if (isHurt)
-        DrawTexturePro(texture, source, dest, Vector2{0,0}, 0.f, FADE);
+        DrawTexturePro(texture, source, dest, Vector2{0, 0}, 0.f, FADE);
     else
-        DrawTexturePro(texture, source, dest, Vector2{0,0}, 0.f, WHITE);
-
+        DrawTexturePro(texture, source, dest, Vector2{0, 0}, 0.f, WHITE);
 }
 void BaseCharacter::UpdateIsHurt(float deltaTime)
 {
-    if(!isHurt) return;
+    if (!isHurt)
+        return;
     hurtRunningTime += deltaTime;
     if (hurtRunningTime >= hurtUpdateTime)
     {
@@ -47,17 +46,16 @@ void BaseCharacter::UpdateIsHurt(float deltaTime)
 }
 void BaseCharacter::Hurt(float takeDamageAmount)
 {
-    if(!isHurt)
-    {
-        health -= takeDamageAmount;
-        isHurt = true;
-        isHurtFirstFrame = true;
-    }
+    if (isHurt)
+        return;
+    health -= takeDamageAmount;
+    isHurt = true;
+    isHurtFirstFrame = true;
 }
 void BaseCharacter::ResetToFirstFrame()
 {
     isHurtFirstFrame = false;
     isHurt = false;
     hurtRunningTime = 0;
-    moveDirectionTo = {0,0};
+    moveDirectionTo = {0, 0};
 }

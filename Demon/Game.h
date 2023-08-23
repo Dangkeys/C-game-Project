@@ -19,6 +19,8 @@ public:
     bool isNextWave{false};
 
 private:
+    float hurtRunningTime{0};
+    void AttackPlayer(float deltaTime);
     void AttackEnemy();
     void UI();
     void ResetCoin();
@@ -35,7 +37,6 @@ private:
     float landHeight{18 * tileSize};
     float sizeOfRectangle{20.f};
     int mapboundSize{5};
-
     int score{};
     int coinCollected{};
     int coinCounter{};

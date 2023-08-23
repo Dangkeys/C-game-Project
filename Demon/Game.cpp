@@ -15,13 +15,38 @@ void Game::Update(float deltaTime)
     map.Update(player.GetWorldPosition());
     player.Update(deltaTime);
     little.Update(deltaTime);
+    little.playerPosition = player.GetWorldPosition();
+
+    AttackEnemy();
+    AttackPlayer(deltaTime);
     PlayerMapboundMechanic();
     UpdateCoin(deltaTime);
     UI();
 }
+void Game::AttackPlayer(float deltaTime)
+{
+    if (CheckCollisionRecs(player.GetCollision(), little.GetCollision()))
+    {
+        hurtRunningTime += deltaTime;
+        if(hurtRunningTime >= 0.1)
+        {
+            player.Hurt(little.dealDamageAmount);
+            player.isHurt = true;
+        }else
+            hurtRunningTime = 0;
+    }
+}
 void Game::AttackEnemy()
 {
     if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) && player.canAttack)
+    {
+        player.canAttack = false;
+        if(CheckCollisionRecs(little.GetCollision(),player.GetDrawSwordCollision()))
+        {
+            little.Hurt(player.dealDamageAmount);
+            //dont forget to add mapbound for enemy
+        }
+    }
 }
 void Game::UpdateCoin(float deltaTime)
 {

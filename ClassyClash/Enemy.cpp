@@ -86,7 +86,7 @@ void Enemy::tick(float deltaTime)
             {
                 velocity = {-patrolSpeed, 0.f};
             }
-        }
+        } 
         else
         {
             if (isBottombound)

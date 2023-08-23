@@ -1,3 +1,5 @@
+#ifndef PLAYER_H
+#define PLAYER_H
 #include "BaseCharacter.h"
 
 class Player : public BaseCharacter
@@ -11,7 +13,8 @@ public:
     bool isValidD{true};
     virtual void ResetToFirstFrame() override;
     void ResetNextWave();
-
+    bool canAttack{true};
+    Rectangle GetDrawSwordCollision();
 private:
     //score mechanic
 
@@ -30,7 +33,6 @@ private:
     int windowWidth{};
     int windowHeight{};
     // attack mechanic and animation
-    bool canAttack{true};
     float canAttackRunningTime{0};
     float canAttackUpdateTime{0.3f};
     // weapon references
@@ -46,3 +48,4 @@ private:
     float swordRotation{};
     Color swordColor{WHITE};
 };
+#endif

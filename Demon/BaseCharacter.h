@@ -15,6 +15,8 @@ public:
     virtual void ResetToFirstFrame();
     bool isHurt{false};
     float dealDamageAmount{1};
+    float GetDrawWidth() { return textureWidth * scale; }
+    float hurtUpdateTime{0.2f};
 
 protected:
     void UpdateIsHurt(float deltaTime);
@@ -38,12 +40,10 @@ protected:
     int animationMaxFrame{8};
     float animationRunningTime{};
     float animationUpdateTime{1 / 12.f};
-    float hurtRunningTime{};
-    float hurtUpdateTime{0.2f};
+    float hurtRunningTime{0};
     // draw character
     void DrawCharacter();
     Vector2 drawPosition{};
-    float GetDrawWidth() { return textureWidth * scale; }
     void UndoMovementX() { worldPosition.x = worldPositionLastFrame.x; }
     void UndoMovementY() { worldPosition.y = worldPositionLastFrame.y; }
     float GetDrawHeight() { return textureHeight * scale; }
