@@ -5,17 +5,17 @@ Little::Little()
     if (randomTribe == 1)
     {
         texture = LoadTexture("characters/littleOrc.png");
-        movementSpeed = 5.f;//9
+        movementSpeed = 9.f;//9
     }
     else if (randomTribe == 2)
     {
         texture = LoadTexture("characters/littleDemon.png");
-        movementSpeed = 5.f;//10
+        movementSpeed = 10.f;//10
     }
     else
     {
         texture = LoadTexture("characters/littleUndead.png");
-        movementSpeed = 5.f;//8
+        movementSpeed = 8.f;//8
     }
     textureWidth = texture.width / animationMaxFrame;
     textureHeight = texture.height;
@@ -23,7 +23,7 @@ Little::Little()
     health = 2.f;
     scale = 5.f;
     detectRadius = 0;
-    knockbackAmount = 20.f;
+    knockbackAmount = movementSpeed * 4;
     hurtUpdateTime = 0.3f;
     patrolUpdateTime = GetRandomValue(1,2);
 

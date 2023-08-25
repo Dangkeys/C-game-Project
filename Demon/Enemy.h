@@ -9,8 +9,11 @@
 class Enemy: public BaseCharacter
 {
 public:
+    float GetDetectRadius(){return detectRadius;}
     Vector2 playerPosition{};
+    float GetHurtRunningTime(){return hurtRunningTime;}
     Enemy();
+    Vector2 GetCenterDetectRadius(){return Vector2{GetDrawWidth()/2, GetDrawHeight()/2};}
     bool isUpperbound{false};
     bool isLowerbound{false};
     bool isLeftbound{false};
@@ -18,14 +21,17 @@ public:
     virtual void Update(float deltaTime) override;
     void SetTarget(Player *setter) {target = setter;}
 protected:
-    float knockbackAmount{1.f};
+    float knockbackAmount{10.f};
     float detectRadius{250};
     float patrolUpdateTime{};
     int patrolFirstFrame{};
     float patrolAmount{movementSpeed - 2};
     Vector2 knockBackMoveDirectionTo{};
+    int tileSize{32 * 4};
 private:
     Player *target{NULL};
+    float dealDamageRunningTime{};
+    float dealDamageUpdateTime{0.4};
     void UpdateKnockBack();
     void MapboundXMechanic();
     void MapboundYMechanic();

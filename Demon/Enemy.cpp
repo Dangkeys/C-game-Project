@@ -9,15 +9,19 @@ Enemy::Enemy()
 }
 void Enemy::Update(float deltaTime)
 {
-    faceRightLastFrame = faceRight;
     if (!GetAlive())
         return;
+    //draw detect radius
+    DrawCircleLines(GetCenterDetectRadius().x,GetCenterDetectRadius().y, detectRadius, RED);
+
+    faceRightLastFrame = faceRight;
     if (target != NULL)
     {
         drawPosition = Vector2Subtract(worldPosition, target->GetWorldPosition());
         ChaseMechanic();
         if (moveDirectionTo.x != 0)
             moveDirectionTo.x < 0.f ? faceRight = -1 : faceRight = 1;
+        AttackPlayer(deltaTime);
         UpdateKnockBack();
         BaseCharacter::Update(deltaTime);
     }
@@ -39,14 +43,14 @@ void Enemy::AttackPlayer(float deltaTime)
 
     if (CheckCollisionRecs(target->GetCollision(), GetCollision()))
     {
-        hurtRunningTime += deltaTime;
-        if(hurtRunningTime >= 0.1)
+        dealDamageRunningTime += deltaTime;
+        if(dealDamageRunningTime >= dealDamageUpdateTime)
         {
             target->Hurt(dealDamageAmount);
             target->isHurt = true;
-        }else
-            hurtRunningTime = 0;
-    }
+        }
+    }else
+        dealDamageRunningTime = 0;
 }
 void Enemy::UpdateKnockBack()
 {
@@ -60,6 +64,7 @@ void Enemy::UpdateKnockBack()
     if (isHurtFirstFrame)
     {
         isHurtFirstFrame = false;
+        knockBackMoveDirectionTo = moveDirectionTo;
     }
     moveDirectionTo = Vector2Scale(knockBackMoveDirectionTo, knockbackAmount);
     MapboundXMechanic();

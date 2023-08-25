@@ -11,7 +11,7 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
     scale = 7.f;
     health = 10.f;
     alive = true;
-    hurtUpdateTime = 0.2f;
+    hurtUpdateTime = 0.3f;
     dealDamageAmount = 1.f;
     movementSpeed = 8.f;
     drawPosition = {static_cast<float>(windowWidth) / 2 - GetDrawWidth() / 2, static_cast<float>(windowHeight) / 2 - GetDrawHeight() / 2};

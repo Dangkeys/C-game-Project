@@ -6,6 +6,6 @@ class Little: public Enemy
 public:
     Little();
 private:
-    int tileSize{32 * 4};
+    
 };
 

@@ -11,7 +11,9 @@ void BaseCharacter::Update(float deltaTime)
     worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(moveDirectionTo), movementSpeed));
     moveDirectionTo = {0, 0};
     DrawCharacter();
-    DrawRectangleLines(drawPosition.x, drawPosition.y,GetDrawWidth(),GetDrawHeight(), RED);
+
+    //show hitbox
+    // DrawRectangleLines(drawPosition.x, drawPosition.y,GetDrawWidth(),GetDrawHeight(), RED);
 }
 void BaseCharacter::UpdateAnimation(float deltaTime)
 {

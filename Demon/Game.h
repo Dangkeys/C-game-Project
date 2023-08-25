@@ -20,7 +20,6 @@ public:
 
 private:
     float hurtRunningTime{0};
-    void AttackPlayer(float deltaTime);
     void AttackEnemy();
     void UI();
     void ResetCoin();
@@ -51,7 +50,6 @@ private:
         {{7 * tileSize + 55, 21 * tileSize + 70}, landWidth, sizeOfRectangle},
         {{7 * tileSize + 30, 4 * tileSize}, sizeOfRectangle, landHeight},
         {{40 * tileSize + 70.f, 4 * tileSize}, sizeOfRectangle, landHeight}};
-
     Coin coins[COINMAX];
     Player player{getWindowWidth(), getWindowHeight(), LoadTexture("characters/knight_idle_spritesheet.png")};
     Map map{LoadTexture("nature_tileset/realMap.png"), {0, 0}};
