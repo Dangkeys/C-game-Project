@@ -8,18 +8,25 @@ Game::Game(int winWidth, int winHeight) : windowWidth(winWidth),
 void Game::Update(float deltaTime)
 {
     little.SetTarget(&player);
+    if (CheckCollisionCircleRec(super.GetCenterDetectRadius(), super.GetDetectRadius(), player.GetCollision()))
+        super.SetTarget(&player);
+    else
+        super.SetTarget(NULL);
     if (coinCollected >= coinCounter)
         isNextWave = true;
     if (!player.GetAlive())
         isGameEnd = true;
     map.Update(player.GetWorldPosition());
+    UpdateCoin(deltaTime);
     player.Update(deltaTime);
     little.Update(deltaTime);
     little.playerPosition = player.GetWorldPosition();
-
+    super.Update(deltaTime);
+    super.playerPosition = player.GetWorldPosition();
+    LittleMapboundMechanic();
+    SuperMapboundMechanic();
     AttackEnemy();
     PlayerMapboundMechanic();
-    UpdateCoin(deltaTime);
     UI();
 }
 
@@ -67,6 +74,8 @@ void Game::UI()
 }
 void Game::ResetFirstFrame()
 {
+    player.ResetHealth();
+    player.SetAlive(true);
     waveCounter = 0;
     score = 0;
     ResetNextWave();
@@ -155,4 +164,42 @@ void Game::PlayerMapboundMechanic()
         player.isValidD = false;
     else
         player.isValidD = true;
+}
+void Game::SuperMapboundMechanic()
+{
+    if (CheckCollisionRecs(super.GetCollision(), mapbounds[1].GetCollision()))
+        super.isUpperbound = true;
+    else
+        super.isUpperbound = false;
+    if (CheckCollisionRecs(super.GetCollision(), mapbounds[2].GetCollision()))
+        super.isLowerbound = true;
+    else
+        super.isLowerbound = false;
+    if (CheckCollisionRecs(super.GetCollision(), mapbounds[3].GetCollision()))
+        super.isLeftbound = true;
+    else
+        super.isLeftbound = false;
+    if (CheckCollisionRecs(super.GetCollision(), mapbounds[4].GetCollision()))
+        super.isRightbound = true;
+    else
+        super.isRightbound = false;
+}
+void Game::LittleMapboundMechanic()
+{
+    if (CheckCollisionRecs(little.GetCollision(), mapbounds[1].GetCollision()))
+        little.isUpperbound = true;
+    else
+        little.isUpperbound = false;
+    if (CheckCollisionRecs(little.GetCollision(), mapbounds[2].GetCollision()))
+        little.isLowerbound = true;
+    else
+        little.isLowerbound = false;
+    if (CheckCollisionRecs(little.GetCollision(), mapbounds[3].GetCollision()))
+        little.isLeftbound = true;
+    else
+        little.isLeftbound = false;
+    if (CheckCollisionRecs(little.GetCollision(), mapbounds[4].GetCollision()))
+        little.isRightbound = true;
+    else
+        little.isRightbound = false;
 }

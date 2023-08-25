@@ -12,7 +12,7 @@ void Enemy::Update(float deltaTime)
     if (!GetAlive())
         return;
     //draw detect radius
-    DrawCircleLines(GetCenterDetectRadius().x,GetCenterDetectRadius().y, detectRadius, RED);
+    // DrawCircle(GetCenterDetectRadius().x,GetCenterDetectRadius().y, detectRadius, {255,0,0,50});
 
     faceRightLastFrame = faceRight;
     if (target != NULL)
@@ -38,10 +38,10 @@ void Enemy::Update(float deltaTime)
 }
 void Enemy::AttackPlayer(float deltaTime)
 {
-    if (target == NULL)
+    if (target == NULL )
         return;
 
-    if (CheckCollisionRecs(target->GetCollision(), GetCollision()))
+    if (CheckCollisionRecs(target->GetCollision(), GetCollision()) && !(target->isHurt))
     {
         dealDamageRunningTime += deltaTime;
         if(dealDamageRunningTime >= dealDamageUpdateTime)
@@ -89,7 +89,8 @@ void Enemy::PatrolMechanic(float deltaTime)
         return;
 
     patrolRunningTime += deltaTime;
-
+    LeftboundPatrolMechanic();
+    RightboundPatrolMechanic();
     if (patrolRunningTime >= patrolUpdateTime)
     {
         patrolRunningTime = 0;
@@ -120,7 +121,9 @@ void Enemy::ChaseMechanic()
         return;
     moveDirectionTo = Vector2Subtract(target->GetDrawPosition(), drawPosition);
     if (isLowerbound)
+        moveDirectionTo = Vector2Add(moveDirectionTo, {0, -GetDrawHeight()});
+    else if(isUpperbound)
         moveDirectionTo = Vector2Add(moveDirectionTo, {0, GetDrawHeight()});
-    if (Vector2Length(moveDirectionTo) < scale + target->GetDrawWidth() / 2)
+    if (Vector2Length(moveDirectionTo) < 5 * scale)
         moveDirectionTo = {};
 }

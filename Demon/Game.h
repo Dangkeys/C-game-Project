@@ -3,6 +3,7 @@
 #include "Mapbound.h"
 #include "Coin.h"
 #include "Little.h"
+#include "Super.h"
 #include <string>
 #define COINMAX 189
 class Game
@@ -19,6 +20,8 @@ public:
     bool isNextWave{false};
 
 private:
+    void LittleMapboundMechanic();
+    void SuperMapboundMechanic();
     float hurtRunningTime{0};
     void AttackEnemy();
     void UI();
@@ -34,21 +37,21 @@ private:
     const int tileSize{4 * 32};
     float landWidth{33 * tileSize + 20.f};
     float landHeight{18 * tileSize};
-    float sizeOfRectangle{20.f};
+    float sizeOfRectangle{50.f};
     int mapboundSize{5};
     int score{};
     int coinCollected{};
     int coinCounter{};
     Little little;
     Vector2 coinOffset{-50.f, 82.f};
-
+    Super super;
     // player bound
     // 0 is playerbound 1 is upper 2 is lower 3 is left 4 is right
     Mapbound mapbounds[5]{
-        {{7 * tileSize + 55, 4 * tileSize - 30}, landWidth, sizeOfRectangle},
-        {{7 * tileSize + 55, 4 * tileSize + 40}, landWidth, sizeOfRectangle},
+        {{7 * tileSize + 55, 4 * tileSize - 70}, landWidth, sizeOfRectangle},
+        {{7 * tileSize + 55, 4 * tileSize - 20}, landWidth, sizeOfRectangle},
         {{7 * tileSize + 55, 21 * tileSize + 70}, landWidth, sizeOfRectangle},
-        {{7 * tileSize + 30, 4 * tileSize}, sizeOfRectangle, landHeight},
+        {{7 * tileSize + 20, 4 * tileSize}, sizeOfRectangle, landHeight},
         {{40 * tileSize + 70.f, 4 * tileSize}, sizeOfRectangle, landHeight}};
     Coin coins[COINMAX];
     Player player{getWindowWidth(), getWindowHeight(), LoadTexture("characters/knight_idle_spritesheet.png")};

@@ -5,19 +5,21 @@
 class BaseCharacter
 {
 public:
+    void ResetHealth() {health = maxHealth;}
     void Hurt(float takeDamageAmount);
     virtual void Update(float deltaTime);
     float GetHealth() { return health; }
     bool GetAlive() { return alive; }
-    Vector2 GetDrawPosition() {return drawPosition;}
-    Rectangle GetCollision() { return Rectangle{drawPosition.x, drawPosition.y, GetDrawWidth(), GetDrawHeight()}; }
+    Vector2 GetDrawPosition() { return drawPosition; }
+    Rectangle GetCollision() { return Rectangle{drawPosition.x + 4 * scale, drawPosition.y, GetDrawWidth() - 8 * scale, GetDrawHeight()}; }
     Vector2 GetWorldPosition() { return worldPosition; }
     virtual void ResetToFirstFrame();
     bool isHurt{false};
     float dealDamageAmount{1};
     float GetDrawWidth() { return textureWidth * scale; }
     float hurtUpdateTime{0.2f};
-
+    float GetDrawHeight() { return textureHeight * scale; }
+    void SetAlive(bool setter) {alive = setter;}
 protected:
     void UpdateIsHurt(float deltaTime);
     void UpdateAnimation(float deltaTime);
@@ -28,6 +30,7 @@ protected:
     float scale{1};
 
     float movementSpeed{8};
+    float maxHealth{1};
     float health{1};
     bool alive{false};
     Vector2 worldPosition{};
@@ -46,10 +49,11 @@ protected:
     Vector2 drawPosition{};
     void UndoMovementX() { worldPosition.x = worldPositionLastFrame.x; }
     void UndoMovementY() { worldPosition.y = worldPositionLastFrame.y; }
-    float GetDrawHeight() { return textureHeight * scale; }
+
     Color FADE{255, 255, 255, 100};
     // method
     bool isHurtFirstFrame{false};
+
 private:
 };
 #endif

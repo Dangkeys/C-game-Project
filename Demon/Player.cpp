@@ -9,7 +9,8 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
     textureWidth = texture.width / animationMaxFrame;
     textureHeight = texture.height;
     scale = 7.f;
-    health = 10.f;
+    maxHealth = 10.f;
+    health = maxHealth;
     alive = true;
     hurtUpdateTime = 0.3f;
     dealDamageAmount = 1.f;

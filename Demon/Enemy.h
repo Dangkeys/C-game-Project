@@ -1,5 +1,5 @@
 #ifndef ENEMY_H
-#define ENEMY_h
+#define ENEMY_H
 #include "raylib.h"
 #include "BaseCharacter.h"
 #include "Player.h"
@@ -13,7 +13,7 @@ public:
     Vector2 playerPosition{};
     float GetHurtRunningTime(){return hurtRunningTime;}
     Enemy();
-    Vector2 GetCenterDetectRadius(){return Vector2{GetDrawWidth()/2, GetDrawHeight()/2};}
+    Vector2 GetCenterDetectRadius(){return Vector2{drawPosition.x + GetDrawWidth()/2, drawPosition.y + GetDrawHeight()/2};}
     bool isUpperbound{false};
     bool isLowerbound{false};
     bool isLeftbound{false};
@@ -31,7 +31,8 @@ protected:
 private:
     Player *target{NULL};
     float dealDamageRunningTime{};
-    float dealDamageUpdateTime{0.4};
+    float dealDamageUpdateTime{0.25};
+
     void UpdateKnockBack();
     void MapboundXMechanic();
     void MapboundYMechanic();

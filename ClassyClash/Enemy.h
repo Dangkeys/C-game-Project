@@ -1,5 +1,5 @@
 #ifndef ENEMY_H
-#define ENEMY_h
+#define ENEMY_H
 #include "raylib.h"
 #include "BaseCharacter.h"
 #include "Character.h"

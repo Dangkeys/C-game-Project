@@ -3,17 +3,20 @@
 
 void BaseCharacter::Update(float deltaTime)
 {
+    if (health <= 0)
+    {
+        alive = false;
+        return;
+    }
     worldPositionLastFrame = worldPosition;
     UpdateAnimation(deltaTime);
     UpdateIsHurt(deltaTime);
-    if (health <= 0)
-        return;
     worldPosition = Vector2Add(worldPosition, Vector2Scale(Vector2Normalize(moveDirectionTo), movementSpeed));
     moveDirectionTo = {0, 0};
     DrawCharacter();
 
     //show hitbox
-    // DrawRectangleLines(drawPosition.x, drawPosition.y,GetDrawWidth(),GetDrawHeight(), RED);
+    // DrawRectangleLines(GetCollision().x, GetCollision().y,GetCollision().width, GetCollision().height, RED);
 }
 void BaseCharacter::UpdateAnimation(float deltaTime)
 {

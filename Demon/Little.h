@@ -1,3 +1,5 @@
+#ifndef LITTLE_H
+#define LITTLE_H
 #include "raylib.h"
 #include "Enemy.h"
 
@@ -8,4 +10,5 @@ public:
 private:
     
 };
+#endif
 

@@ -20,7 +20,8 @@ Little::Little()
     textureWidth = texture.width / animationMaxFrame;
     textureHeight = texture.height;
     dealDamageAmount = 0.5f;
-    health = 2.f;
+    maxHealth = 2.f;
+    health = maxHealth;
     scale = 5.f;
     detectRadius = 0;
     knockbackAmount = movementSpeed * 4;
