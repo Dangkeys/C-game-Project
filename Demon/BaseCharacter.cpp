@@ -3,8 +3,10 @@
 
 void BaseCharacter::Update(float deltaTime)
 {
+
     if (health <= 0)
     {
+        UnloadTexture(texture);
         alive = false;
         return;
     }

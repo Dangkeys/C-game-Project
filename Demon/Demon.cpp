@@ -26,9 +26,10 @@ int main(void)
         }
         else if (game.isGameEnd)
         {
-            DrawText("Game has ended", screenWidth / 2, screenHeight / 3, 70, BLACK);
-            DrawText("Press Enter to play", screenWidth / 2, screenHeight / 2, 50, BLACK);
-            if (IsKeyPressed(KEY_ENTER))
+            DrawTextureEx(LoadTexture("nature_tileset/realMap.png"), {-2500, 0}, 0.f, 4, WHITE);
+            DrawText("Ha, loser", screenWidth / 2, screenHeight / 3, 70, BLACK);
+            DrawText("press spacebar if you want to try agian. Noob!", screenWidth / 2, screenHeight / 2, 50, BLACK);
+            if (IsKeyPressed(KEY_SPACE))
             {
                 game.isGameEnd = false;
                 game.ResetFirstFrame();
@@ -97,7 +98,7 @@ void MainMenu()
     }
     else
     {
-        DrawText("Press spacebar to play", screenWidth / 2 - 250, screenHeight / 2 + 50, 50, WHITE);
+        DrawText("press spacebar to play", screenWidth / 2 - 250, screenHeight / 2 + 50, 50, WHITE);
     }
 }
 

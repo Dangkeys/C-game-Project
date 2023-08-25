@@ -116,6 +116,8 @@ void Player::ResetToFirstFrame()
 }
 void Player::ResetNextWave()
 {
+    isHurt = false;
+    hurtRunningTime = 0;
     canAttack = true;
     canAttackRunningTime = 0;
     scale = 7.f;

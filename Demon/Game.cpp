@@ -7,22 +7,38 @@ Game::Game(int winWidth, int winHeight) : windowWidth(winWidth),
 }
 void Game::Update(float deltaTime)
 {
+    if (!player.GetAlive())
+        isGameEnd = true;
     little.SetTarget(&player);
+    strong.SetTarget(&player);
+    if(CheckCollisionCircleRec(normal.GetCenterDetectRadius(),normal.GetDetectRadius(),player.GetCollision()))
+        normal.SetTarget(&player);
+    else
+        normal.SetTarget(NULL);
     if (CheckCollisionCircleRec(super.GetCenterDetectRadius(), super.GetDetectRadius(), player.GetCollision()))
         super.SetTarget(&player);
     else
         super.SetTarget(NULL);
+    if (CheckCollisionCircleRec(runner.GetCenterDetectRadius(), runner.GetDetectRadius(), player.GetCollision()))
+        runner.SetTarget(&player);
     if (coinCollected >= coinCounter)
         isNextWave = true;
-    if (!player.GetAlive())
-        isGameEnd = true;
     map.Update(player.GetWorldPosition());
     UpdateCoin(deltaTime);
     player.Update(deltaTime);
-    little.Update(deltaTime);
+
     little.playerPosition = player.GetWorldPosition();
-    super.Update(deltaTime);
+    little.Update(deltaTime);
+    normal.playerPosition = player.GetWorldPosition();
+    normal.Update(deltaTime);
     super.playerPosition = player.GetWorldPosition();
+    super.Update(deltaTime);
+    strong.Update(deltaTime);
+    strong.playerPosition = player.GetWorldPosition();
+    runner.Update(deltaTime);
+    runner.playerPosition = player.GetWorldPosition();
+
+
     LittleMapboundMechanic();
     SuperMapboundMechanic();
     AttackEnemy();

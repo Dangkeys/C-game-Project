@@ -4,6 +4,9 @@
 #include "Coin.h"
 #include "Little.h"
 #include "Super.h"
+#include "Normal.h"
+#include "Runner.h"
+#include "Strong.h"
 #include <string>
 #define COINMAX 189
 class Game
@@ -20,6 +23,7 @@ public:
     bool isNextWave{false};
 
 private:
+
     void LittleMapboundMechanic();
     void SuperMapboundMechanic();
     float hurtRunningTime{0};
@@ -42,9 +46,13 @@ private:
     int score{};
     int coinCollected{};
     int coinCounter{};
-    Little little;
     Vector2 coinOffset{-50.f, 82.f};
+    Little little;
+    Runner runner;
+    Normal normal;
+    Strong strong;
     Super super;
+
     // player bound
     // 0 is playerbound 1 is upper 2 is lower 3 is left 4 is right
     Mapbound mapbounds[5]{

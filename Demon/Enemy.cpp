@@ -124,6 +124,6 @@ void Enemy::ChaseMechanic()
         moveDirectionTo = Vector2Add(moveDirectionTo, {0, -GetDrawHeight()});
     else if(isUpperbound)
         moveDirectionTo = Vector2Add(moveDirectionTo, {0, GetDrawHeight()});
-    if (Vector2Length(moveDirectionTo) < 5 * scale)
+    if (Vector2Length(moveDirectionTo) < 8 * scale)
         moveDirectionTo = {};
 }
