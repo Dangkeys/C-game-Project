@@ -1,7 +1,7 @@
 Tajdang 2500
-Tajdang 1780
-Tajdang 1820
-Tajdang 1570
+AlsoTajdang 1780
+TajdangAgain 1820
+TajdangInwZaa 1570
 Meow 500
 kai 60
 mama 210
@@ -36,5 +36,12 @@ adfaf 200
 asd 50
 adf 160
 asdf 170
-kkkk 1370
-kkkk 1190
+Dangkeys 1370
+Dangkeysdang 1190
+Tajdang007 3430
+Taj 1340
+fasdf 1460
+Eiei 3340
+fs 3370
+fs 1750
+susu 120

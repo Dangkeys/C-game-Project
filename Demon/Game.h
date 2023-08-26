@@ -27,13 +27,17 @@ public:
 
 
 private:
+    float coinWidth{};
+    int coinAnimationFrame{};
+    float coinRunningTime{};
+    float coinUpdateTime{1.f/9.f};
     int enemySize{};
     float hurtRunningTime{0};
     void ResetEnemy();
     void Spawn(float deltaTime);
     void UpdateEnemy(float deltaTime);
     void AttackEnemy();
-    void UI();
+    void UI(float deltaTime);
     void ResetCoin();
     void UpdateCoin(float deltaTime);
     void PlayerMapboundMechanic();

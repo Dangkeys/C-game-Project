@@ -26,7 +26,7 @@ void Game::Update(float deltaTime)
     AttackEnemy();
     UpdateEnemy(deltaTime);
     PlayerMapboundMechanic();
-    UI();
+    UI(deltaTime);
 }
 
 void Game::ResetEnemy()
@@ -219,8 +219,22 @@ void Game::UpdateCoin(float deltaTime)
         }
     }
 }
-void Game::UI()
+void Game::UI(float deltaTime)
 {
+    coinRunningTime += deltaTime;
+    if(coinRunningTime >= coinUpdateTime)
+    {
+        coinAnimationFrame++;
+        coinRunningTime = 0;
+        if(coinAnimationFrame > 12)
+            coinAnimationFrame = 0;
+    }
+    Texture2D coinUI{LoadTexture("nature_tileset/SPA_Coins.png")};
+    coinWidth = coinUI.width / 12;
+    Rectangle coinSource{coinAnimationFrame * coinWidth,0,coinWidth, coinUI.height};
+    float scale{4.f};
+    Rectangle coinDest{windowWidth - 300.f, 50.f, coinWidth * scale, coinUI.height * scale};
+    DrawTexturePro(coinUI, coinSource, coinDest, {0,0}, 0, WHITE);
     std ::string knightHealth = "Health: ";
     knightHealth.append(std ::to_string(player.GetHealth()), 0, 4);
     DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
@@ -229,12 +243,12 @@ void Game::UI()
     coinCount.append("/", 0, 1);
     coinCount.append(std::to_string(coinCounter), 0, 3);
     DrawText(coinCount.c_str(), windowWidth - 120.f, windowHeight - 80, 30, WHITE);
-    std ::string showScore = "Score: ";
+    std ::string showScore = "";
     showScore.append(std::to_string(score), 0, 10);
-    DrawText(showScore.c_str(), 55, 150.f, 40, WHITE);
-    std ::string showWave = "Wave: ";
-    showWave.append(std::to_string(waveCounter), 0, 4);
-    DrawText(showWave.c_str(), windowWidth - 200.f, 100.f, 40, WHITE);
+    DrawText(showScore.c_str(), windowWidth - 140.f, 100.f, 40, WHITE);
+    // std ::string showWave = "Wave: ";
+    // showWave.append(std::to_string(waveCounter), 0, 4);
+    // DrawText(showWave.c_str(), windowWidth - 200.f, 100.f, 40, WHITE);
 }
 void Game::ResetFirstFrame()
 {
