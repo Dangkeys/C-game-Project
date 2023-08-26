@@ -29,13 +29,11 @@ public:
         health = maxHealth;
         scale = 6.f;
         detectRadius = 200;
-        knockbackAmount = movementSpeed * 5;
-        hurtUpdateTime = 0.1f;
+        knockbackAmount = movementSpeed * 4;
+        hurtUpdateTime = 0.15f;
         patrolUpdateTime = GetRandomValue(1, 2);
 
         // this code is only for testing
-        alive = true;
-        worldPosition = {(float)GetRandomValue(9 * tileSize, 40 * tileSize), (float)GetRandomValue(5 * tileSize, 20 * tileSize)};
     }
 
 private:

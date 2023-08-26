@@ -110,7 +110,7 @@ void Player::SetAttackAnimation(float deltaTime)
 
 void Player::ResetToFirstFrame()
 {
-    health = 10.f;
+    ResetHealth();
     alive = true;
     ResetNextWave();
 }
@@ -118,8 +118,6 @@ void Player::ResetNextWave()
 {
     isHurt = false;
     hurtRunningTime = 0;
-    canAttack = true;
-    canAttackRunningTime = 0;
     scale = 7.f;
     movementSpeed = 8.f;
     worldPosition = {};

@@ -36,8 +36,6 @@ public:
         patrolUpdateTime = GetRandomValue(1, 2);
 
         // this code is only for testing
-        alive = true;
-        worldPosition = {(float)GetRandomValue(9 * tileSize, 40 * tileSize),(float)GetRandomValue(5 * tileSize, 20 * tileSize)};
 
     }
 

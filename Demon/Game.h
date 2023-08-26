@@ -9,9 +9,11 @@
 #include "Strong.h"
 #include <string>
 #define COINMAX 189
+#define ENEMYMAX 100
 class Game
 {
 public:
+    int GetScore(){return score;}
     Game(int winWidth, int winHeight);
     void Update(float deltaTime);
     int getWindowWidth() { return windowWidth; }
@@ -21,9 +23,15 @@ public:
     bool isGameEnd{false};
     int waveCounter{};
     bool isNextWave{false};
+    bool endFirstFrame{false};
+
 
 private:
+    int enemySize{};
     float hurtRunningTime{0};
+    void ResetEnemy();
+    void Spawn(float deltaTime);
+    void UpdateEnemy(float deltaTime);
     void AttackEnemy();
     void UI();
     void ResetCoin();
@@ -31,6 +39,8 @@ private:
     void PlayerMapboundMechanic();
     void SetCoin(int x, int y);
     void SetPositionCoin();
+    float spawnUpdateTime{30};
+    float spawnRunningTime{spawnUpdateTime};
     const int sizeOfCoinWidth{31};
     const int sizeOfCoinHeight{15};
     int windowWidth{1900};
@@ -44,11 +54,11 @@ private:
     int coinCollected{};
     int coinCounter{};
     Vector2 coinOffset{-50.f, 82.f};
-    Little little;
-    Runner runner;
-    Normal normal;
-    Strong strong;
-    Super super;
+    Little littles[ENEMYMAX];
+    Runner runners[ENEMYMAX];
+    Normal normals[ENEMYMAX];
+    Strong strongs[ENEMYMAX];
+    Super supers[ENEMYMAX];
 
     // 0 is playerbound 1 is upper 2 is lower 3 is left 4 is right
     Mapbound mapbounds[5]{

@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#define ENEMYMAX 100
 Game::Game(int winWidth, int winHeight) : windowWidth(winWidth),
                                           windowHeight(winHeight)
 {
@@ -8,20 +8,204 @@ Game::Game(int winWidth, int winHeight) : windowWidth(winWidth),
 void Game::Update(float deltaTime)
 {
     if (!player.GetAlive())
-        isGameEnd = true;
+    {
+        endFirstFrame = true;
+        if(endFirstFrame)
+            isGameEnd = true;
+    }
+
+    if (coinCollected >= coinCounter)
+    {
+        isNextWave = true;
+        return;
+    }
     map.Update(player.GetWorldPosition());
     UpdateCoin(deltaTime);
     player.Update(deltaTime);
-
-
+    Spawn(deltaTime);
+    AttackEnemy();
+    UpdateEnemy(deltaTime);
     PlayerMapboundMechanic();
     UI();
 }
 
+void Game::ResetEnemy()
+{
+    for (int i = 0; i < enemySize; i++)
+    {
+        littles[i].EnemyReset();
+        normals[i].EnemyReset();
+        strongs[i].EnemyReset();
+        runners[i].EnemyReset();
+        supers[i].EnemyReset();
+    }
+    enemySize = 0;
+}
+void Game::Spawn(float deltaTime)
+{
+    spawnRunningTime += deltaTime;
+    if (spawnRunningTime >= spawnUpdateTime)
+    {
+        int randomPositionX[5]{};
+        int randomPositionY[5]{};
+        spawnRunningTime = 0;
+        if (enemySize <= ENEMYMAX - 6)
+            enemySize++;
+        littles[enemySize - 1].SetAlive(true);
+        normals[enemySize - 1].SetAlive(true);
+        strongs[enemySize - 1].SetAlive(true);
+        runners[enemySize - 1].SetAlive(true);
+        supers[enemySize - 1].SetAlive(true);
+        for (int i = 0; i < 5; i++)
+        {
+            do
+            {
+                randomPositionX[i] = GetRandomValue(9 * tileSize, 39 * tileSize);
+                randomPositionY[i] = GetRandomValue(5 * tileSize, 19 * tileSize);
+            } while ((randomPositionX[i] >= player.GetWorldPosition().x && randomPositionX[i] <= player.GetWorldPosition().x + windowWidth) &&
+                     (randomPositionY[i] >= player.GetWorldPosition().y && randomPositionY[i] <= player.GetWorldPosition().y + windowHeight));
+        }
+        littles[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[0], (float)randomPositionY[0]});
+        normals[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[1], (float)randomPositionY[1]});
+        strongs[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[2], (float)randomPositionY[2]});
+        runners[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[3], (float)randomPositionY[3]});
+        supers[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[4], (float)randomPositionY[4]});
+    }
+}
 void Game::AttackEnemy()
 {
-
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) && player.canAttack)
+    {
+        player.canAttack = false;
+        for (int i = 0; i < enemySize; i++)
+        {
+            if (CheckCollisionRecs(littles[i].GetCollision(), player.GetDrawSwordCollision()))
+                littles[i].Hurt(player.dealDamageAmount);
+            if (CheckCollisionRecs(normals[i].GetCollision(), player.GetDrawSwordCollision()))
+                normals[i].Hurt(player.dealDamageAmount);
+            if (CheckCollisionRecs(strongs[i].GetCollision(), player.GetDrawSwordCollision()))
+                strongs[i].Hurt(player.dealDamageAmount);
+            if (CheckCollisionRecs(runners[i].GetCollision(), player.GetDrawSwordCollision()))
+                runners[i].Hurt(player.dealDamageAmount);
+            if (CheckCollisionRecs(supers[i].GetCollision(), player.GetDrawSwordCollision()))
+                supers[i].Hurt(player.dealDamageAmount);
+        }
+    }
 }
+void Game::UpdateEnemy(float deltaTime)
+{
+    for (int i = 0; i < enemySize; i++)
+    {
+        littles[i].playerPosition = player.GetWorldPosition();
+        littles[i].Update(deltaTime);
+        normals[i].playerPosition = player.GetWorldPosition();
+        normals[i].Update(deltaTime);
+        strongs[i].playerPosition = player.GetWorldPosition();
+        strongs[i].Update(deltaTime);
+        runners[i].playerPosition = player.GetWorldPosition();
+        runners[i].Update(deltaTime);
+        supers[i].playerPosition = player.GetWorldPosition();
+        supers[i].Update(deltaTime);
+
+        littles[i].SetTarget(&player);
+        if (CheckCollisionCircleRec(normals[i].GetCenterDetectRadius(), normals[i].GetDetectRadius(), player.GetCollision()))
+            normals[i].SetTarget(&player);
+        else
+            normals[i].SetTarget(NULL);
+        strongs[i].SetTarget(&player);
+        if (CheckCollisionCircleRec(runners[i].GetCenterDetectRadius(), runners[i].GetDetectRadius(), player.GetCollision()))
+            runners[i].SetTarget(&player);
+        if (CheckCollisionCircleRec(supers[i].GetCenterDetectRadius(), supers[i].GetDetectRadius(), player.GetCollision()))
+            supers[i].SetTarget(&player);
+        else
+            supers[i].SetTarget(NULL);
+        if (CheckCollisionRecs(littles[i].GetCollision(), mapbounds[1].GetCollision()))
+            littles[i].isUpperbound = true;
+        else
+            littles[i].isUpperbound = false;
+        if (CheckCollisionRecs(littles[i].GetCollision(), mapbounds[2].GetCollision()))
+            littles[i].isLowerbound = true;
+        else
+            littles[i].isLowerbound = false;
+        if (CheckCollisionRecs(littles[i].GetCollision(), mapbounds[3].GetCollision()))
+            littles[i].isLeftbound = true;
+        else
+            littles[i].isLeftbound = false;
+        if (CheckCollisionRecs(littles[i].GetCollision(), mapbounds[4].GetCollision()))
+            littles[i].isRightbound = true;
+        else
+            littles[i].isRightbound = false;
+
+        if (CheckCollisionRecs(normals[i].GetCollision(), mapbounds[1].GetCollision()))
+            normals[i].isUpperbound = true;
+        else
+            normals[i].isUpperbound = false;
+        if (CheckCollisionRecs(normals[i].GetCollision(), mapbounds[2].GetCollision()))
+            normals[i].isLowerbound = true;
+        else
+            normals[i].isLowerbound = false;
+        if (CheckCollisionRecs(normals[i].GetCollision(), mapbounds[3].GetCollision()))
+            normals[i].isLeftbound = true;
+        else
+            normals[i].isLeftbound = false;
+        if (CheckCollisionRecs(normals[i].GetCollision(), mapbounds[4].GetCollision()))
+            normals[i].isRightbound = true;
+        else
+            normals[i].isRightbound = false;
+
+        if (CheckCollisionRecs(strongs[i].GetCollision(), mapbounds[1].GetCollision()))
+            strongs[i].isUpperbound = true;
+        else
+            strongs[i].isUpperbound = false;
+        if (CheckCollisionRecs(strongs[i].GetCollision(), mapbounds[2].GetCollision()))
+            strongs[i].isLowerbound = true;
+        else
+            strongs[i].isLowerbound = false;
+        if (CheckCollisionRecs(strongs[i].GetCollision(), mapbounds[3].GetCollision()))
+            strongs[i].isLeftbound = true;
+        else
+            strongs[i].isLeftbound = false;
+        if (CheckCollisionRecs(strongs[i].GetCollision(), mapbounds[4].GetCollision()))
+            strongs[i].isRightbound = true;
+        else
+            strongs[i].isRightbound = false;
+
+        if (CheckCollisionRecs(runners[i].GetCollision(), mapbounds[1].GetCollision()))
+            runners[i].isUpperbound = true;
+        else
+            runners[i].isUpperbound = false;
+        if (CheckCollisionRecs(runners[i].GetCollision(), mapbounds[2].GetCollision()))
+            runners[i].isLowerbound = true;
+        else
+            runners[i].isLowerbound = false;
+        if (CheckCollisionRecs(runners[i].GetCollision(), mapbounds[3].GetCollision()))
+            runners[i].isLeftbound = true;
+        else
+            runners[i].isLeftbound = false;
+        if (CheckCollisionRecs(runners[i].GetCollision(), mapbounds[4].GetCollision()))
+            runners[i].isRightbound = true;
+        else
+            runners[i].isRightbound = false;
+
+        if (CheckCollisionRecs(supers[i].GetCollision(), mapbounds[1].GetCollision()))
+            supers[i].isUpperbound = true;
+        else
+            supers[i].isUpperbound = false;
+        if (CheckCollisionRecs(supers[i].GetCollision(), mapbounds[2].GetCollision()))
+            supers[i].isLowerbound = true;
+        else
+            supers[i].isLowerbound = false;
+        if (CheckCollisionRecs(supers[i].GetCollision(), mapbounds[3].GetCollision()))
+            supers[i].isLeftbound = true;
+        else
+            supers[i].isLeftbound = false;
+        if (CheckCollisionRecs(supers[i].GetCollision(), mapbounds[4].GetCollision()))
+            supers[i].isRightbound = true;
+        else
+            supers[i].isRightbound = false;
+    }
+}
+
 void Game::UpdateCoin(float deltaTime)
 {
     for (int i = 0; i < COINMAX; i++)
@@ -31,7 +215,7 @@ void Game::UpdateCoin(float deltaTime)
         {
             coinCollected++;
             coins[i].SetActive(false);
-            score = coinCollected * 10;
+            score += 10;
         }
     }
 }
@@ -40,11 +224,11 @@ void Game::UI()
     std ::string knightHealth = "Health: ";
     knightHealth.append(std ::to_string(player.GetHealth()), 0, 4);
     DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
-    // std ::string coinCount = "Coin: ";
-    // coinCount.append(std ::to_string(coinCollected), 0, 3);
-    // coinCount.append("/", 0, 1);
-    // coinCount.append(std::to_string(coinCounter), 0, 3);
-    // DrawText(coinCount.c_str(), windowWidth - 280.f, 100.f, 40, WHITE);
+    std ::string coinCount = "";
+    coinCount.append(std ::to_string(coinCollected), 0, 3);
+    coinCount.append("/", 0, 1);
+    coinCount.append(std::to_string(coinCounter), 0, 3);
+    DrawText(coinCount.c_str(), windowWidth - 120.f, windowHeight - 80, 30, WHITE);
     std ::string showScore = "Score: ";
     showScore.append(std::to_string(score), 0, 10);
     DrawText(showScore.c_str(), 55, 150.f, 40, WHITE);
@@ -62,8 +246,14 @@ void Game::ResetFirstFrame()
 }
 void Game::ResetNextWave()
 {
+    spawnRunningTime = spawnUpdateTime;
+    if (spawnUpdateTime >= 6)
+        spawnUpdateTime -= (waveCounter)*5;
+    else if (spawnUpdateTime >= 1)
+        spawnUpdateTime--;
     player.ResetNextWave();
     ResetCoin();
+    ResetEnemy();
     coinCollected = 0;
 }
 void Game::SetCoin(int x, int y)

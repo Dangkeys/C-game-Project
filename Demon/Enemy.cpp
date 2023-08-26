@@ -11,8 +11,8 @@ void Enemy::Update(float deltaTime)
 {
     if (!GetAlive())
         return;
-    //draw detect radius
-    // DrawCircle(GetCenterDetectRadius().x,GetCenterDetectRadius().y, detectRadius, {255,0,0,50});
+    // draw detect radius
+    //  DrawCircle(GetCenterDetectRadius().x,GetCenterDetectRadius().y, detectRadius, {255,0,0,50});
 
     faceRightLastFrame = faceRight;
     if (target != NULL)
@@ -38,18 +38,19 @@ void Enemy::Update(float deltaTime)
 }
 void Enemy::AttackPlayer(float deltaTime)
 {
-    if (target == NULL )
+    if (target == NULL)
         return;
 
     if (CheckCollisionRecs(target->GetCollision(), GetCollision()) && !(target->isHurt))
     {
         dealDamageRunningTime += deltaTime;
-        if(dealDamageRunningTime >= dealDamageUpdateTime)
+        if (dealDamageRunningTime >= dealDamageUpdateTime)
         {
             target->Hurt(dealDamageAmount);
             target->isHurt = true;
         }
-    }else
+    }
+    else
         dealDamageRunningTime = 0;
 }
 void Enemy::UpdateKnockBack()
@@ -122,8 +123,18 @@ void Enemy::ChaseMechanic()
     moveDirectionTo = Vector2Subtract(target->GetDrawPosition(), drawPosition);
     if (isLowerbound)
         moveDirectionTo = Vector2Add(moveDirectionTo, {0, -GetDrawHeight()});
-    else if(isUpperbound)
+    else if (isUpperbound)
         moveDirectionTo = Vector2Add(moveDirectionTo, {0, GetDrawHeight()});
     if (Vector2Length(moveDirectionTo) < 5 * scale)
         moveDirectionTo = {};
+}
+
+void Enemy::EnemyReset()
+{
+    target = NULL;
+    isHurtFirstFrame = false;
+    isHurt = false;
+    hurtRunningTime = 0;
+    ResetHealth();
+    SetAlive(false);
 }

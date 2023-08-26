@@ -3,10 +3,8 @@
 
 void BaseCharacter::Update(float deltaTime)
 {
-
     if (health <= 0)
     {
-        UnloadTexture(texture);
         alive = false;
         return;
     }
@@ -17,9 +15,10 @@ void BaseCharacter::Update(float deltaTime)
     moveDirectionTo = {0, 0};
     DrawCharacter();
 
-    //show hitbox
-    // DrawRectangleLines(GetCollision().x, GetCollision().y,GetCollision().width, GetCollision().height, RED);
+    // show hitbox
+    //  DrawRectangleLines(GetCollision().x, GetCollision().y,GetCollision().width, GetCollision().height, RED);
 }
+
 void BaseCharacter::UpdateAnimation(float deltaTime)
 {
     animationRunningTime += deltaTime;

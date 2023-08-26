@@ -30,12 +30,10 @@ public:
         scale = 7.f;
         detectRadius = 400;
         knockbackAmount = movementSpeed * 4;
-        hurtUpdateTime = 0.2f;
+        hurtUpdateTime = 0.3f;
         patrolUpdateTime = GetRandomValue(2, 4);
 
         // this code is only for testing
-        alive = true;
-        worldPosition = {(float)GetRandomValue(9 * tileSize, 40 * tileSize), (float)GetRandomValue(5 * tileSize, 20 * tileSize)};
     }
 
 private:

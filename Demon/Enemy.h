@@ -9,6 +9,7 @@
 class Enemy: public BaseCharacter
 {
 public:
+    void EnemyReset();
     float GetDetectRadius(){return detectRadius;}
     Vector2 playerPosition{};
     float GetHurtRunningTime(){return hurtRunningTime;}
@@ -20,6 +21,7 @@ public:
     bool isRightbound{false};
     virtual void Update(float deltaTime) override;
     void SetTarget(Player *setter) {target = setter;}
+    void SetWorldPosition(Vector2 position) {worldPosition = position;}
 protected:
     float knockbackAmount{10.f};
     float detectRadius{250};
