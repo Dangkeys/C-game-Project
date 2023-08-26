@@ -18,14 +18,35 @@ bool hasInput = false;
 void MainMenu();
 void EndgameUI();
 void ScoreboardMechanic(std::string &name, int score);
+Sound menu{};
+Sound confirm{};
+Sound typing{};
+Sound deny{};
+Sound lose{};
+
 int main(void)
 {
 
     InitWindow(screenWidth, screenHeight, "Demon");
+    InitAudioDevice();
     Game game{screenWidth, screenHeight};
+    Sound music{LoadSound("SFX/Music.wav")};
+    SetSoundVolume(music,0.1);
+    menu = LoadSound("SFX/MenuSFX.wav");
+    SetSoundVolume(menu, 1);
+    confirm = LoadSound("SFX/Confirm.wav");
+    SetSoundVolume(confirm, 0.8);
+    typing = LoadSound("SFX/TypeSFX.wav");
+    SetSoundVolume(typing, 0.7);
+    deny = LoadSound("SFX/Cancel.wav");
+    SetSoundVolume(deny, 0.8);
+    lose = LoadSound("SFX/LoseSFX.wav");
+    SetSoundVolume(lose, 0.8);
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+        if(!IsSoundPlaying(music))
+            PlaySound(music);
         BeginDrawing();
         ClearBackground(WHITE);
         if (!startGame)
@@ -37,6 +58,7 @@ int main(void)
             DrawTextureEx(LoadTexture("nature_tileset/realMap.png"), {-2500, 0}, 0.f, 4, WHITE);
             if (game.endFirstFrame)
             {
+                PlaySound(lose);
                 score = game.GetScore();
                 // write scoreboard
                 ScoreboardMechanic(userInput, score);
@@ -45,6 +67,7 @@ int main(void)
             EndgameUI();
             if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_ENTER))
             {
+                PlaySound(menu);
                 game.isGameEnd = false;
                 game.ResetFirstFrame();
             }
@@ -60,7 +83,7 @@ int main(void)
         EndDrawing();
     }
     CloseWindow();
-
+    UnloadSound(menu);
     return 0;
 }
 
@@ -70,6 +93,7 @@ void MainMenu()
     DrawText("Demon", screenWidth / 2 - 350, screenHeight / 3, 70, WHITE);
     if ((IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) && !startGame && !pleaseEnterName)
     {
+        PlaySound(menu);
         pleaseEnterName = true;
     }
     else if (!startGame && pleaseEnterName)
@@ -78,18 +102,27 @@ void MainMenu()
 
         if (IsKeyPressed(KEY_BACKSPACE) && !userInput.empty())
         {
+            PlaySound(typing);
             userInput.pop_back(); // Remove the last character
         }
         else if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE))
         {
             if (!userInput.empty())
+            {
+                PlaySound(confirm);
                 startGame = true; // Start the game if there's input and Enter is pressed
+            }
+            else
+                PlaySound(deny);
         }
         else
         {
             int key = GetCharPressed();
             if (key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && userInput.length() < 30)
+            {
+                PlaySound(typing);
                 userInput += static_cast<char>(key); // Add the pressed character to the input string
+            }
         }
 
         // Update the cursor blink timer

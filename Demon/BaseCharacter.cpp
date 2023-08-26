@@ -1,10 +1,17 @@
 #include "BaseCharacter.h"
 #include "raymath.h"
 
+BaseCharacter::BaseCharacter()
+{
+    SetSoundVolume(death, 0.4);
+    SetSoundVolume(hurt, 0.4);
+}
+
 void BaseCharacter::Update(float deltaTime)
 {
     if (health <= 0)
     {
+        PlaySound(death);
         alive = false;
         return;
     }
@@ -54,6 +61,7 @@ void BaseCharacter::Hurt(float takeDamageAmount)
 {
     if (isHurt)
         return;
+    PlaySound(hurt);
     health -= takeDamageAmount;
     isHurt = true;
     isHurtFirstFrame = true;

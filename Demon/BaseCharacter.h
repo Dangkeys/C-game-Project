@@ -5,6 +5,7 @@
 class BaseCharacter
 {
 public:
+    BaseCharacter();
     void ResetHealth() {health = maxHealth;}
     void Hurt(float takeDamageAmount);
     virtual void Update(float deltaTime);
@@ -55,5 +56,7 @@ protected:
     bool isHurtFirstFrame{false};
 
 private:
+    Sound death{LoadSound("SFX/DeathSFX.wav")};
+    Sound hurt{LoadSound("SFX/Hurt.wav")};
 };
 #endif

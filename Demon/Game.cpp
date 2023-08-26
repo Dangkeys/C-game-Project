@@ -4,13 +4,21 @@ Game::Game(int winWidth, int winHeight) : windowWidth(winWidth),
                                           windowHeight(winHeight)
 {
     SetPositionCoin();
+    SetSoundVolume(Coin1, 0.2);
+    SetSoundVolume(Coin2, 0.2);
+    SetSoundVolume(Coin3, 0.2);
+    SetSoundVolume(slash1, 0.4);
+    SetSoundVolume(slash2, 0.4);
+    SetSoundVolume(slash3, 0.4);
+    SetSoundVolume(alert, 0.4);
+    SetSoundVolume(spawn, 1);
 }
 void Game::Update(float deltaTime)
 {
     if (!player.GetAlive())
     {
         endFirstFrame = true;
-        if(endFirstFrame)
+        if (endFirstFrame)
             isGameEnd = true;
     }
 
@@ -46,6 +54,7 @@ void Game::Spawn(float deltaTime)
     spawnRunningTime += deltaTime;
     if (spawnRunningTime >= spawnUpdateTime)
     {
+        PlaySound(spawn);
         int randomPositionX[5]{};
         int randomPositionY[5]{};
         spawnRunningTime = 0;
@@ -76,6 +85,13 @@ void Game::AttackEnemy()
 {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) && player.canAttack)
     {
+        int rand = GetRandomValue(1, 3);
+        if (rand == 1)
+            PlaySound(slash1);
+        else if (rand == 2)
+            PlaySound(slash2);
+        else
+            PlaySound(slash3);
         player.canAttack = false;
         for (int i = 0; i < enemySize; i++)
         {
@@ -114,11 +130,28 @@ void Game::UpdateEnemy(float deltaTime)
             normals[i].SetTarget(NULL);
         strongs[i].SetTarget(&player);
         if (CheckCollisionCircleRec(runners[i].GetCenterDetectRadius(), runners[i].GetDetectRadius(), player.GetCollision()))
+        {
             runners[i].SetTarget(&player);
-        if (CheckCollisionCircleRec(supers[i].GetCenterDetectRadius(), supers[i].GetDetectRadius(), player.GetCollision()))
+            if(runners[i].alertFirstFrame)
+            {
+                PlaySound(alert);
+                runners[i].alertFirstFrame = false;
+            }
+        }else
+            runners[i].alertFirstFrame = true;
+        if (CheckCollisionCircleRec(supers[i].GetCenterDetectRadius(), supers[i].GetDetectRadius(), player.GetCollision()) && supers[i].GetAlive())
+        {
             supers[i].SetTarget(&player);
-        else
+            if(supers[i].alertFirstFrame)
+            {
+                PlaySound(alert);
+                supers[i].alertFirstFrame = false;
+            }
+        }
+        else{
+            supers[i].alertFirstFrame = true;
             supers[i].SetTarget(NULL);
+        }
         if (CheckCollisionRecs(littles[i].GetCollision(), mapbounds[1].GetCollision()))
             littles[i].isUpperbound = true;
         else
@@ -205,7 +238,6 @@ void Game::UpdateEnemy(float deltaTime)
             supers[i].isRightbound = false;
     }
 }
-
 void Game::UpdateCoin(float deltaTime)
 {
     for (int i = 0; i < COINMAX; i++)
@@ -213,6 +245,13 @@ void Game::UpdateCoin(float deltaTime)
         coins[i].Update(player.GetWorldPosition(), deltaTime);
         if (CheckCollisionRecs(coins[i].GetCollision(), player.GetCollision()) && coins[i].GetActive())
         {
+            int rand = GetRandomValue(1, 3);
+            if (rand == 1)
+                PlaySound(Coin1);
+            else if (rand == 2)
+                PlaySound(Coin2);
+            else
+                PlaySound(Coin3);
             coinCollected++;
             coins[i].SetActive(false);
             score += 10;
@@ -222,19 +261,19 @@ void Game::UpdateCoin(float deltaTime)
 void Game::UI(float deltaTime)
 {
     coinRunningTime += deltaTime;
-    if(coinRunningTime >= coinUpdateTime)
+    if (coinRunningTime >= coinUpdateTime)
     {
         coinAnimationFrame++;
         coinRunningTime = 0;
-        if(coinAnimationFrame > 12)
+        if (coinAnimationFrame > 12)
             coinAnimationFrame = 0;
     }
     Texture2D coinUI{LoadTexture("nature_tileset/SPA_Coins.png")};
     coinWidth = coinUI.width / 12;
-    Rectangle coinSource{coinAnimationFrame * coinWidth,0,coinWidth, coinUI.height};
+    Rectangle coinSource{coinAnimationFrame * coinWidth, 0, coinWidth, coinUI.height};
     float scale{4.f};
     Rectangle coinDest{windowWidth - 300.f, 50.f, coinWidth * scale, coinUI.height * scale};
-    DrawTexturePro(coinUI, coinSource, coinDest, {0,0}, 0, WHITE);
+    DrawTexturePro(coinUI, coinSource, coinDest, {0, 0}, 0, WHITE);
     std ::string knightHealth = "Health: ";
     knightHealth.append(std ::to_string(player.GetHealth()), 0, 4);
     DrawText(knightHealth.c_str(), 55.f, 100.f, 40, WHITE);
@@ -260,6 +299,8 @@ void Game::ResetFirstFrame()
 }
 void Game::ResetNextWave()
 {
+    if (waveCounter % 2 == 0)
+        player.ResetHealth();
     spawnRunningTime = spawnUpdateTime;
     if (spawnUpdateTime >= 6)
         spawnUpdateTime -= (waveCounter)*5;

@@ -9,6 +9,7 @@
 class Enemy: public BaseCharacter
 {
 public:
+    bool alertFirstFrame{true};
     void EnemyReset();
     float GetDetectRadius(){return detectRadius;}
     Vector2 playerPosition{};

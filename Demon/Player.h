@@ -16,6 +16,7 @@ public:
     bool canAttack{true};
     Rectangle GetDrawSwordCollision();
 private:
+    Sound footstep{LoadSound("SFX/Footstep.wav")};
     //score mechanic
 
     float playerScale{7.f};

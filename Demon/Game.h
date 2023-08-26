@@ -27,6 +27,15 @@ public:
 
 
 private:
+
+    Sound spawn{LoadSound("SFX/SpawnSFX.wav")};
+    Sound alert{LoadSound("SFX/Alert.wav")};
+    Sound slash1{LoadSound("SFX/slash1SFX.wav")};
+    Sound slash2{LoadSound("SFX/slash2SFX.wav")};
+    Sound slash3{LoadSound("SFX/slash3SFX.wav")};
+    Sound Coin1{LoadSound("SFX/Coin.wav")};
+    Sound Coin2{LoadSound("SFX/Coin2.wav")};
+    Sound Coin3{LoadSound("SFX/Coin3.wav")};
     float coinWidth{};
     int coinAnimationFrame{};
     float coinRunningTime{};

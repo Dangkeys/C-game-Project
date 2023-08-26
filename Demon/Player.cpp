@@ -24,6 +24,7 @@ Player::Player(int winWidth, int winHeight, Texture2D sprite)
         GetDrawSwordWidth(),
         GetDrawSwordHeight()};
     swordColor = WHITE;
+    SetSoundVolume(footstep,0.1);
 }
 Rectangle Player::GetDrawSwordCollision()
 {
@@ -36,11 +37,6 @@ Rectangle Player::GetDrawSwordCollision()
 
 void Player::Update(float deltaTime)
 {
-    if (health <= 0)
-    {
-        alive = false;
-        return;
-    }
     UpdateMovement();
     if (moveDirectionTo.x != 0)
         moveDirectionTo.x < 0.f ? faceRight = -1 : faceRight = 1;
@@ -66,9 +62,15 @@ void Player::UpdateMovement()
 void Player::ChangeAnimationState()
 {
     if (Vector2Length(moveDirectionTo) != 0.0)
+    {
+        if(!IsSoundPlaying(footstep))
+            PlaySound(footstep);
         texture = run;
-    else
+    }
+    else{
+        StopSound(footstep);
         texture = idle;
+    }
 }
 
 void Player::DrawSword()
