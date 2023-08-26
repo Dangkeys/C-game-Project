@@ -29,9 +29,9 @@ Rectangle Player::GetDrawSwordCollision()
 {
     if (faceRight > 0.f)
     {
-        return Rectangle{swordCollision.x, swordCollision.y - GetDrawSwordHeight(),swordCollision.width,swordCollision.height};
+        return Rectangle{swordCollision.x - GetDrawWidth()/4, swordCollision.y - GetDrawSwordHeight(),swordCollision.width + GetDrawWidth()/4,swordCollision.height + GetDrawHeight()/4};
     }
-    return Rectangle{swordCollision.x - GetDrawSwordWidth(), swordCollision.y - GetDrawSwordHeight(),swordCollision.width,swordCollision.height};
+    return Rectangle{swordCollision.x - GetDrawSwordWidth(), swordCollision.y - GetDrawSwordHeight(),swordCollision.width + GetDrawWidth()/4,swordCollision.height + GetDrawHeight()/4};
 }
 
 void Player::Update(float deltaTime)

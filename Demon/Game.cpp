@@ -9,54 +9,18 @@ void Game::Update(float deltaTime)
 {
     if (!player.GetAlive())
         isGameEnd = true;
-    little.SetTarget(&player);
-    strong.SetTarget(&player);
-    if(CheckCollisionCircleRec(normal.GetCenterDetectRadius(),normal.GetDetectRadius(),player.GetCollision()))
-        normal.SetTarget(&player);
-    else
-        normal.SetTarget(NULL);
-    if (CheckCollisionCircleRec(super.GetCenterDetectRadius(), super.GetDetectRadius(), player.GetCollision()))
-        super.SetTarget(&player);
-    else
-        super.SetTarget(NULL);
-    if (CheckCollisionCircleRec(runner.GetCenterDetectRadius(), runner.GetDetectRadius(), player.GetCollision()))
-        runner.SetTarget(&player);
-    if (coinCollected >= coinCounter)
-        isNextWave = true;
     map.Update(player.GetWorldPosition());
     UpdateCoin(deltaTime);
     player.Update(deltaTime);
 
-    little.playerPosition = player.GetWorldPosition();
-    little.Update(deltaTime);
-    normal.playerPosition = player.GetWorldPosition();
-    normal.Update(deltaTime);
-    super.playerPosition = player.GetWorldPosition();
-    super.Update(deltaTime);
-    strong.Update(deltaTime);
-    strong.playerPosition = player.GetWorldPosition();
-    runner.Update(deltaTime);
-    runner.playerPosition = player.GetWorldPosition();
 
-
-    LittleMapboundMechanic();
-    SuperMapboundMechanic();
-    AttackEnemy();
     PlayerMapboundMechanic();
     UI();
 }
 
 void Game::AttackEnemy()
 {
-    if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) && player.canAttack)
-    {
-        player.canAttack = false;
-        if (CheckCollisionRecs(little.GetCollision(), player.GetDrawSwordCollision()))
-        {
-            little.Hurt(player.dealDamageAmount);
-            // dont forget to add mapbound for enemy (every mapbound)
-        }
-    }
+
 }
 void Game::UpdateCoin(float deltaTime)
 {
@@ -180,42 +144,4 @@ void Game::PlayerMapboundMechanic()
         player.isValidD = false;
     else
         player.isValidD = true;
-}
-void Game::SuperMapboundMechanic()
-{
-    if (CheckCollisionRecs(super.GetCollision(), mapbounds[1].GetCollision()))
-        super.isUpperbound = true;
-    else
-        super.isUpperbound = false;
-    if (CheckCollisionRecs(super.GetCollision(), mapbounds[2].GetCollision()))
-        super.isLowerbound = true;
-    else
-        super.isLowerbound = false;
-    if (CheckCollisionRecs(super.GetCollision(), mapbounds[3].GetCollision()))
-        super.isLeftbound = true;
-    else
-        super.isLeftbound = false;
-    if (CheckCollisionRecs(super.GetCollision(), mapbounds[4].GetCollision()))
-        super.isRightbound = true;
-    else
-        super.isRightbound = false;
-}
-void Game::LittleMapboundMechanic()
-{
-    if (CheckCollisionRecs(little.GetCollision(), mapbounds[1].GetCollision()))
-        little.isUpperbound = true;
-    else
-        little.isUpperbound = false;
-    if (CheckCollisionRecs(little.GetCollision(), mapbounds[2].GetCollision()))
-        little.isLowerbound = true;
-    else
-        little.isLowerbound = false;
-    if (CheckCollisionRecs(little.GetCollision(), mapbounds[3].GetCollision()))
-        little.isLeftbound = true;
-    else
-        little.isLeftbound = false;
-    if (CheckCollisionRecs(little.GetCollision(), mapbounds[4].GetCollision()))
-        little.isRightbound = true;
-    else
-        little.isRightbound = false;
 }
