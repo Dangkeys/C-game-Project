@@ -54,6 +54,7 @@ void Game::Spawn(float deltaTime)
     spawnRunningTime += deltaTime;
     if (spawnRunningTime >= spawnUpdateTime)
     {
+        isSpawn = true;
         PlaySound(spawn);
         int randomPositionX[5]{};
         int randomPositionY[5]{};
@@ -83,7 +84,7 @@ void Game::Spawn(float deltaTime)
 }
 void Game::AttackEnemy()
 {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) && player.canAttack)
+    if ((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) && player.canAttack)
     {
         int rand = GetRandomValue(1, 3);
         if (rand == 1)
@@ -132,23 +133,25 @@ void Game::UpdateEnemy(float deltaTime)
         if (CheckCollisionCircleRec(runners[i].GetCenterDetectRadius(), runners[i].GetDetectRadius(), player.GetCollision()))
         {
             runners[i].SetTarget(&player);
-            if(runners[i].alertFirstFrame)
+            if (runners[i].alertFirstFrame)
             {
                 PlaySound(alert);
                 runners[i].alertFirstFrame = false;
             }
-        }else
+        }
+        else
             runners[i].alertFirstFrame = true;
         if (CheckCollisionCircleRec(supers[i].GetCenterDetectRadius(), supers[i].GetDetectRadius(), player.GetCollision()) && supers[i].GetAlive())
         {
             supers[i].SetTarget(&player);
-            if(supers[i].alertFirstFrame)
+            if (supers[i].alertFirstFrame)
             {
                 PlaySound(alert);
                 supers[i].alertFirstFrame = false;
             }
         }
-        else{
+        else
+        {
             supers[i].alertFirstFrame = true;
             supers[i].SetTarget(NULL);
         }
@@ -260,6 +263,16 @@ void Game::UpdateCoin(float deltaTime)
 }
 void Game::UI(float deltaTime)
 {
+    if (isSpawn)
+    {
+        DrawText("Enemies have spawned",windowWidth/2 - 200, 100, 40, WHITE);
+        isSpawnRunningTime += deltaTime;
+        if(isSpawnRunningTime >= isSpawnUpdateTime)
+        {
+            isSpawnRunningTime = 0;
+            isSpawn = false;
+        }
+    }
     coinRunningTime += deltaTime;
     if (coinRunningTime >= coinUpdateTime)
     {
@@ -291,7 +304,7 @@ void Game::UI(float deltaTime)
 }
 void Game::ResetFirstFrame()
 {
-    player.ResetHealth();
+    spawnUpdateTime = 40;
     player.SetAlive(true);
     waveCounter = 0;
     score = 0;
@@ -299,8 +312,9 @@ void Game::ResetFirstFrame()
 }
 void Game::ResetNextWave()
 {
-    if (waveCounter % 2 == 0)
-        player.ResetHealth();
+    isSpawn = false;
+    isSpawnRunningTime = 0;
+    player.ResetHealth();
     spawnRunningTime = spawnUpdateTime;
     if (spawnUpdateTime >= 6)
         spawnUpdateTime -= (waveCounter)*5;

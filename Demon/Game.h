@@ -27,7 +27,9 @@ public:
 
 
 private:
-
+    bool isSpawn{false};
+    float isSpawnUpdateTime{1.5f};
+    float isSpawnRunningTime{};
     Sound spawn{LoadSound("SFX/SpawnSFX.wav")};
     Sound alert{LoadSound("SFX/Alert.wav")};
     Sound slash1{LoadSound("SFX/slash1SFX.wav")};
@@ -52,7 +54,7 @@ private:
     void PlayerMapboundMechanic();
     void SetCoin(int x, int y);
     void SetPositionCoin();
-    float spawnUpdateTime{30};
+    float spawnUpdateTime{40};
     float spawnRunningTime{spawnUpdateTime};
     const int sizeOfCoinWidth{31};
     const int sizeOfCoinHeight{15};

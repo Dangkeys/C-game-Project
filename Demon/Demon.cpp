@@ -118,11 +118,12 @@ void MainMenu()
         else
         {
             int key = GetCharPressed();
-            if (key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && userInput.length() < 30)
+            if (key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && userInput.length() < 20)
             {
                 PlaySound(typing);
                 userInput += static_cast<char>(key); // Add the pressed character to the input string
-            }
+            } else if(key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && userInput.length() >= 20)
+                PlaySound(deny);
         }
 
         // Update the cursor blink timer

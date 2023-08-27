@@ -23,7 +23,7 @@ void BaseCharacter::Update(float deltaTime)
     DrawCharacter();
 
     // show hitbox
-    //  DrawRectangleLines(GetCollision().x, GetCollision().y,GetCollision().width, GetCollision().height, RED);
+    // DrawRectangleLines(GetCollision().x, GetCollision().y,GetCollision().width, GetCollision().height, RED);
 }
 
 void BaseCharacter::UpdateAnimation(float deltaTime)

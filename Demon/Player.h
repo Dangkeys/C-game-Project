@@ -35,7 +35,7 @@ private:
     int windowHeight{};
     // attack mechanic and animation
     float canAttackRunningTime{0};
-    float canAttackUpdateTime{0.3f};
+    float canAttackUpdateTime{0.4f};
     // weapon references
     Texture2D sword{LoadTexture("characters/weapon_sword.png")};
     float swordScale{scale - 1.f};
