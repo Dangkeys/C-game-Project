@@ -23,14 +23,17 @@ Sound confirm{};
 Sound typing{};
 Sound deny{};
 Sound lose{};
-
+Texture2D menuTexture{};
+Texture2D wood{};
+Texture2D scoreboard{};
 int main(void)
 {
-
+    
     InitWindow(screenWidth, screenHeight, "Demon");
     InitAudioDevice();
     Game game{screenWidth, screenHeight};
     Sound music{LoadSound("SFX/Music.wav")};
+    menuTexture = LoadTexture("nature_tileset/realMap.png");
     SetSoundVolume(music,0.1);
     menu = LoadSound("SFX/MenuSFX.wav");
     SetSoundVolume(menu, 1);
@@ -42,6 +45,8 @@ int main(void)
     SetSoundVolume(deny, 0.8);
     lose = LoadSound("SFX/LoseSFX.wav");
     SetSoundVolume(lose, 0.8);
+    wood = LoadTexture("UI/woodBackgroundUI.png");
+    scoreboard = LoadTexture("UI/scoreboard.png");
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -55,7 +60,7 @@ int main(void)
         }
         else if (game.isGameEnd)
         {
-            DrawTextureEx(LoadTexture("nature_tileset/realMap.png"), {-2500, 0}, 0.f, 4, WHITE);
+            DrawTextureEx(menuTexture, {-2500, 0}, 0.f, 4, WHITE);
             if (game.endFirstFrame)
             {
                 PlaySound(lose);
@@ -67,7 +72,7 @@ int main(void)
             EndgameUI();
             if (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsKeyPressed(KEY_ENTER))
             {
-                PlaySound(menu);
+                PlaySound(confirm);
                 game.isGameEnd = false;
                 game.ResetFirstFrame();
             }
@@ -84,12 +89,19 @@ int main(void)
     }
     CloseWindow();
     UnloadSound(menu);
+    UnloadSound(confirm);
+    UnloadSound(typing);
+    UnloadSound(deny);
+    UnloadSound(lose);
+    UnloadTexture(menuTexture);
+    UnloadTexture(wood);
+    UnloadTexture(scoreboard);
     return 0;
 }
 
 void MainMenu()
 {
-    DrawTextureEx(LoadTexture("nature_tileset/realMap.png"), {-2500, 0}, 0.f, 4, WHITE);
+    DrawTextureEx(menuTexture, {-2500, 0}, 0.f, 4, WHITE);
     DrawText("Demon", screenWidth / 2 - 350, screenHeight / 3, 70, WHITE);
     if ((IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) && !startGame && !pleaseEnterName)
     {
@@ -151,11 +163,8 @@ void EndgameUI()
 {
     float woodscaleX{10.f};
     float woodscaleY{5.f};
-    Texture2D wood{LoadTexture("UI/woodBackgroundUI.png")};
     Rectangle source{0, 0, wood.width, wood.height};
     Rectangle dest{screenWidth / 2 - wood.width * woodscaleX / 2, 100, wood.width * woodscaleX, wood.height * woodscaleY};
-
-    Texture2D scoreboard{LoadTexture("UI/scoreboard.png")};
     Rectangle scoreboardSource{0, 0, scoreboard.width, scoreboard.height};
     Rectangle scoreboardDest{screenWidth / 5, screenHeight / 4, screenWidth * 3 / 5, screenHeight * 2 / 4};
 

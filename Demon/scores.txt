@@ -82,3 +82,14 @@ TajdangZaa 930
 TajdangZaa 450
 Tajang 1460
 Tajang 3220
+j 210
+j 1460
+s 1800
+Tajdang 370
+Tajdang 590
+Tajdang 1810
+Tajdang 5470
+Tajdang 5290
+Tajdang 1900
+Tajdan 290
+Tajdang 120
