@@ -9,6 +9,10 @@
 class Enemy: public BaseCharacter
 {
 public:
+    void SetMovementSpeed(float speed) {movementSpeed = speed;}
+    void SetAnimationMaxFrame(int max) {animationMaxFrame = max;}
+
+
     bool alertFirstFrame{true};
     void EnemyReset();
     float GetDetectRadius(){return detectRadius;}

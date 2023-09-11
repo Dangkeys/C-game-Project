@@ -30,9 +30,9 @@ Rectangle Player::GetDrawSwordCollision()
 {
     if (faceRight > 0.f)
     {
-        return Rectangle{swordCollision.x - GetDrawWidth()/4, swordCollision.y - GetDrawSwordHeight(),swordCollision.width + GetDrawWidth()/4,swordCollision.height + GetDrawHeight()/4};
+        return Rectangle{swordCollision.x - GetDrawWidth()/4, swordCollision.y - GetDrawSwordHeight() - swordOffsetY,swordCollision.width + GetDrawWidth()/4,swordCollision.height + GetDrawHeight()/4 + swordOffsetY * 2};
     }
-    return Rectangle{swordCollision.x - GetDrawSwordWidth(), swordCollision.y - GetDrawSwordHeight(),swordCollision.width + GetDrawWidth()/4,swordCollision.height + GetDrawHeight()/4};
+    return Rectangle{swordCollision.x - GetDrawSwordWidth(), swordCollision.y - GetDrawSwordHeight() - swordOffsetY,swordCollision.width + GetDrawWidth()/4,swordCollision.height + GetDrawHeight()/4 + swordOffsetY * 2};
 }
 
 void Player::Update(float deltaTime)
@@ -92,7 +92,7 @@ void Player::DrawSword()
     Rectangle dest{swordCollision};
     DrawTexturePro(sword, source, dest, swordOrigin, swordRotation, swordColor);
     //draw player sword collision
-    // DrawRectangleLines(GetDrawSwordCollision().x, GetDrawSwordCollision().y, GetDrawSwordCollision().width, GetDrawSwordCollision().height, RED);
+    //DrawRectangleLines(GetDrawSwordCollision().x, GetDrawSwordCollision().y, GetDrawSwordCollision().width, GetDrawSwordCollision().height, RED);
 }
 void Player::SetAttackAnimation(float deltaTime)
 {

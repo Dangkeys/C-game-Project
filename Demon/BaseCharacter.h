@@ -6,7 +6,10 @@ class BaseCharacter
 {
 public:
     BaseCharacter();
-    void ResetHealth() {health = maxHealth;}
+    void SetTextureWidth() { textureWidth = texture.width / animationMaxFrame; }
+    void SetTextureHeight() { textureHeight = texture.height; }
+    void SetTexture(Texture2D sprite) { texture = sprite; }
+    void ResetHealth() { health = maxHealth; }
     void Hurt(float takeDamageAmount);
     virtual void Update(float deltaTime);
     float GetHealth() { return health; }
@@ -20,7 +23,8 @@ public:
     float GetDrawWidth() { return textureWidth * scale; }
     float hurtUpdateTime{0.2f};
     float GetDrawHeight() { return textureHeight * scale; }
-    void SetAlive(bool setter) {alive = setter;}
+    void SetAlive(bool setter) { alive = setter; }
+
 protected:
     void UpdateIsHurt(float deltaTime);
     void UpdateAnimation(float deltaTime);

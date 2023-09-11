@@ -126,15 +126,16 @@ void MainMenu()
             }
             else
                 PlaySound(deny);
-        }
+        }else if(IsKeyPressed(KEY_BACKSPACE) && userInput.empty())
+            PlaySound(deny);
         else
         {
             int key = GetCharPressed();
-            if (key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && userInput.length() < 20)
+            if (key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && key != KEY_SPACE && userInput.length() < 20)
             {
                 PlaySound(typing);
                 userInput += static_cast<char>(key); // Add the pressed character to the input string
-            } else if(key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && userInput.length() >= 20)
+            } else if(key > 0 && key != KEY_BACKSPACE && key != KEY_ENTER && key != KEY_KP_ENTER && key != KEY_SPACE  && userInput.length() >= 20)
                 PlaySound(deny);
         }
 

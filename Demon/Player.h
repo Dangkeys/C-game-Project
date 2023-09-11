@@ -37,6 +37,7 @@ private:
     float canAttackRunningTime{0};
     float canAttackUpdateTime{0.4f};
     // weapon references
+    int swordOffsetY{20};
     Texture2D sword{LoadTexture("characters/weapon_sword.png")};
     float swordScale{scale - 1.f};
     Vector2 swordOffset{-3 * swordScale, 0};

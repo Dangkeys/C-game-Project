@@ -66,14 +66,17 @@ void Game::Spawn(float deltaTime)
         strongs[enemySize - 1].SetAlive(true);
         runners[enemySize - 1].SetAlive(true);
         supers[enemySize - 1].SetAlive(true);
+        RandomTribe();
         for (int i = 0; i < 5; i++)
         {
             do
             {
                 randomPositionX[i] = GetRandomValue(9 * tileSize, 39 * tileSize);
                 randomPositionY[i] = GetRandomValue(5 * tileSize, 19 * tileSize);
-            } while ((randomPositionX[i] >= player.GetWorldPosition().x && randomPositionX[i] <= player.GetWorldPosition().x + windowWidth) &&
-                     (randomPositionY[i] >= player.GetWorldPosition().y && randomPositionY[i] <= player.GetWorldPosition().y + windowHeight));
+            } while ((randomPositionX[i] >= player.GetWorldPosition().x - supers[i].GetDrawWidth() &&
+                      randomPositionX[i] <= player.GetWorldPosition().x + windowWidth) &&
+                     (randomPositionY[i] >= player.GetWorldPosition().y - supers[i].GetDrawHeight() &&
+                      randomPositionY[i] <= player.GetWorldPosition().y + windowHeight));
         }
         littles[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[0], (float)randomPositionY[0]});
         normals[enemySize - 1].SetWorldPosition(Vector2{(float)randomPositionX[1], (float)randomPositionY[1]});
@@ -265,9 +268,9 @@ void Game::UI(float deltaTime)
 {
     if (isSpawn)
     {
-        DrawText("Enemies have spawned",windowWidth/2 - 200, 100, 40, WHITE);
+        DrawText("Enemies have spawned", windowWidth / 2 - 200, 100, 40, WHITE);
         isSpawnRunningTime += deltaTime;
-        if(isSpawnRunningTime >= isSpawnUpdateTime)
+        if (isSpawnRunningTime >= isSpawnUpdateTime)
         {
             isSpawnRunningTime = 0;
             isSpawn = false;
@@ -281,7 +284,7 @@ void Game::UI(float deltaTime)
         if (coinAnimationFrame > 12)
             coinAnimationFrame = 0;
     }
-    Texture2D coinUI{LoadTexture("nature_tileset/SPA_Coins.png")};
+
     coinWidth = coinUI.width / 12;
     Rectangle coinSource{coinAnimationFrame * coinWidth, 0, coinWidth, coinUI.height};
     float scale{4.f};
@@ -403,4 +406,111 @@ void Game::PlayerMapboundMechanic()
         player.isValidD = false;
     else
         player.isValidD = true;
+}
+void Game::RandomTribe()
+{
+    // 0 is little 1 is normal 2 is runners 3 is strongs 4 is super
+    int random[5];
+
+    for (int i = 0; i < 5; i++)
+    {
+        random[i] = GetRandomValue(1, 3);
+    }
+
+    if (random[0] == 1)
+    {
+        littles[enemySize - 1].SetTexture(littleOrc);
+        littles[enemySize - 1].SetMovementSpeed(9.f);
+    }
+    else if (random[0] == 2)
+    {
+        littles[enemySize - 1].SetTexture(littleDemon);
+        littles[enemySize - 1].SetMovementSpeed(10.f);
+    }
+    else
+    {
+        littles[enemySize - 1].SetTexture(littleUndead);
+        littles[enemySize - 1].SetMovementSpeed(10.f);
+    }
+
+    if (random[1] == 1)
+    {
+        normals[enemySize - 1].SetTexture(normalOrc);
+        normals[enemySize - 1].SetMovementSpeed(6.5f);
+        normals[enemySize - 1].SetAnimationMaxFrame(8);
+    }
+    else if (random[1] == 2)
+    {
+        normals[enemySize - 1].SetTexture(normalDemon);
+        normals[enemySize - 1].SetMovementSpeed(7.f);
+        normals[enemySize - 1].SetAnimationMaxFrame(8);
+    }
+    else
+    {
+        normals[enemySize - 1].SetTexture(normalUndead);
+        normals[enemySize - 1].SetMovementSpeed(6.f);
+        normals[enemySize - 1].SetAnimationMaxFrame(4);
+    }
+
+    if (random[2] == 1)
+    {
+        runners[enemySize - 1].SetTexture(runnerOrc);
+        runners[enemySize - 1].SetMovementSpeed(11.5f);
+        runners[enemySize - 1].SetAnimationMaxFrame(8);
+    }
+    else if (random[2] == 2)
+    {
+        runners[enemySize - 1].SetTexture(runnerDemon);
+        runners[enemySize - 1].SetMovementSpeed(12.f);
+        runners[enemySize - 1].SetAnimationMaxFrame(4);
+    }
+    else
+    {
+        runners[enemySize - 1].SetTexture(runnerUndead);
+        runners[enemySize - 1].SetMovementSpeed(11.f);
+        runners[enemySize - 1].SetAnimationMaxFrame(8);
+    }
+
+    if (random[3] == 1)
+    {
+        strongs[enemySize - 1].SetTexture(strongOrc);
+        strongs[enemySize - 1].SetMovementSpeed(5.5f);
+    }
+    else if (random[3] == 2)
+    {
+        strongs[enemySize - 1].SetTexture(strongDemon);
+        strongs[enemySize - 1].SetMovementSpeed(6.f);
+    }
+    else
+    {
+        strongs[enemySize - 1].SetTexture(strongUndead);
+        strongs[enemySize - 1].SetMovementSpeed(5.f);
+    }
+
+    if (random[4] == 1)
+    {
+        supers[enemySize - 1].SetTexture(superOrc);
+        supers[enemySize - 1].SetMovementSpeed(4.5f);
+    }
+    else if (random[4] == 2)
+    {
+        supers[enemySize - 1].SetTexture(superDemon);
+        supers[enemySize - 1].SetMovementSpeed(6.f);
+    }
+    else
+    {
+        supers[enemySize - 1].SetTexture(superUndead);
+        supers[enemySize - 1].SetMovementSpeed(5.f);
+    }
+
+    littles[enemySize - 1].SetTextureWidth();
+    littles[enemySize - 1].SetTextureHeight();
+    normals[enemySize - 1].SetTextureWidth();
+    normals[enemySize - 1].SetTextureHeight();
+    runners[enemySize - 1].SetTextureWidth();
+    runners[enemySize - 1].SetTextureHeight();
+    strongs[enemySize - 1].SetTextureWidth();
+    strongs[enemySize - 1].SetTextureHeight();
+    supers[enemySize - 1].SetTextureWidth();
+    supers[enemySize - 1].SetTextureHeight();
 }

@@ -13,7 +13,7 @@
 class Game
 {
 public:
-    int GetScore(){return score;}
+    int GetScore() { return score; }
     Game(int winWidth, int winHeight);
     void Update(float deltaTime);
     int getWindowWidth() { return windowWidth; }
@@ -25,8 +25,28 @@ public:
     bool isNextWave{false};
     bool endFirstFrame{false};
 
-
 private:
+    // enemy texture
+    Texture2D littleOrc{LoadTexture("characters/littleOrc.png")};
+    Texture2D normalOrc{LoadTexture("characters/normalOrc.png")};
+    Texture2D runnerOrc{LoadTexture("characters/runnerOrc.png")};
+    Texture2D strongOrc{LoadTexture("characters/strongOrc.png")};
+    Texture2D superOrc{LoadTexture("characters/superOrc.png")};
+
+    Texture2D littleDemon{LoadTexture("characters/littleDemon.png")};
+    Texture2D normalDemon{LoadTexture("characters/normalDemon.png")};
+    Texture2D runnerDemon{LoadTexture("characters/runnerDemon.png")};
+    Texture2D strongDemon{LoadTexture("characters/strongDemon.png")};
+    Texture2D superDemon{LoadTexture("characters/superDemon.png")};
+
+    Texture2D littleUndead{LoadTexture("characters/littleUndead.png")};
+    Texture2D normalUndead{LoadTexture("characters/normalUndead.png")};
+    Texture2D runnerUndead{LoadTexture("characters/runnerUndead.png")};
+    Texture2D strongUndead{LoadTexture("characters/strongUndead.png")};
+    Texture2D superUndead{LoadTexture("characters/superUndead.png")};
+
+    void RandomTribe();
+    Texture2D coinUI{LoadTexture("nature_tileset/SPA_Coins.png")};
     bool isSpawn{false};
     float isSpawnUpdateTime{1.5f};
     float isSpawnRunningTime{};
@@ -41,7 +61,7 @@ private:
     float coinWidth{};
     int coinAnimationFrame{};
     float coinRunningTime{};
-    float coinUpdateTime{1.f/9.f};
+    float coinUpdateTime{1.f / 9.f};
     int enemySize{};
     float hurtRunningTime{0};
     void ResetEnemy();
